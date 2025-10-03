@@ -1,5 +1,6 @@
 package com.insider.utils;
 
+import com.insider.exceptions.ConfigManagerException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,21 +13,28 @@ import java.util.Properties;
  */
 public class ConfigManager {
     private static final Logger logger = LogManager.getLogger(ConfigManager.class);
-    private static ConfigManager instance;
-    private Properties properties;
+
+    /**
+     * Initialization-on-demand holder idiom for thread-safe lazy initialization
+     */
+    private static class ConfigManagerHolder {
+        private static final ConfigManager INSTANCE = new ConfigManager();
+    }
+
+    private final Properties properties;
 
     private ConfigManager() {
         properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
                 logger.error("Unable to find config.properties");
-                throw new RuntimeException("config.properties file not found");
+                throw new ConfigManagerException("config.properties file not found", "LOAD_CONFIG", "config.properties");
             }
             properties.load(input);
             logger.info("Configuration loaded successfully");
         } catch (IOException ex) {
             logger.error("Error loading configuration", ex);
-            throw new RuntimeException("Failed to load configuration", ex);
+            throw new ConfigManagerException("Failed to load configuration", "LOAD_CONFIG", "config.properties", ex);
         }
     }
 
@@ -35,14 +43,7 @@ public class ConfigManager {
      * @return ConfigManager instance
      */
     public static ConfigManager getInstance() {
-        if (instance == null) {
-            synchronized (ConfigManager.class) {
-                if (instance == null) {
-                    instance = new ConfigManager();
-                }
-            }
-        }
-        return instance;
+        return ConfigManagerHolder.INSTANCE;
     }
 
     /**
@@ -73,8 +74,8 @@ public class ConfigManager {
         try {
             return Integer.parseInt(properties.getProperty(key));
         } catch (NumberFormatException e) {
-            logger.error("Invalid integer value for key: " + key, e);
-            throw new RuntimeException("Invalid integer value for key: " + key, e);
+            logger.error("Invalid integer value for key: {}", key, e);
+            throw new ConfigManagerException("Invalid integer value for key: %s".formatted(key), "GET_INT_PROPERTY", key, e);
         }
     }
 
