@@ -1,6 +1,5 @@
 package com.insider.utils;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -47,8 +46,8 @@ public class WebDriverFactory {
      * Setup Chrome WebDriver
      */
     private static void setupChromeDriver() {
-        WebDriverManager.chromedriver().setup();
-        
+        // Selenium 4+ otomatik driver yönetimi kullanılıyor
+
         ChromeOptions options = new ChromeOptions();
         ConfigManager config = ConfigManager.getInstance();
         
@@ -70,7 +69,7 @@ public class WebDriverFactory {
         options.addArguments("--disable-extensions");
         
         driver = new ChromeDriver(options);
-        logger.info("Chrome WebDriver created with options");
+        logger.info("Chrome WebDriver created with Selenium 4+ automatic driver management");
     }
 
     /**

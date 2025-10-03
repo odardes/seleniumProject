@@ -1,6 +1,7 @@
 package com.insider.pages;
 
 import com.insider.constants.Locators;
+import com.insider.exceptions.ElementException;
 import com.insider.utils.LoggerUtil;
 import com.insider.utils.WebDriverFactory;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,7 @@ public abstract class BasePage {
     protected WebDriver driver;
     protected WebDriverWait wait;
 
-    public BasePage() {
+    protected BasePage() {
         this.driver = WebDriverFactory.getDriver();
         this.wait = WebDriverFactory.getWait();
     }
@@ -42,7 +43,7 @@ public abstract class BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to click on element: " + elementName, e);
             takeScreenshot("click_error_" + elementName);
-            throw new RuntimeException("Failed to click on element: " + elementName, e);
+            throw new ElementException("Failed to click on element", elementName, "CLICK", e);
         }
     }
 
@@ -59,7 +60,7 @@ public abstract class BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to click on element with JavaScript: " + elementName, e);
             takeScreenshot("js_click_error_" + elementName);
-            throw new RuntimeException("Failed to click on element with JavaScript: " + elementName, e);
+            throw new ElementException("Failed to click on element with JavaScript", elementName, "JS_CLICK", e);
         }
     }
 
@@ -78,7 +79,7 @@ public abstract class BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to get text from element: " + elementName, e);
             takeScreenshot("get_text_error_" + elementName);
-            throw new RuntimeException("Failed to get text from element: " + elementName, e);
+            throw new ElementException("Failed to get text from element", elementName, "GET_TEXT", e);
         }
     }
 
@@ -114,7 +115,7 @@ public abstract class BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Element did not become visible: " + elementName, e);
             takeScreenshot("wait_error_" + elementName);
-            throw new RuntimeException("Element did not become visible: " + elementName, e);
+            throw new ElementException("Element did not become visible", elementName, "WAIT_VISIBLE", e);
         }
     }
 
@@ -132,7 +133,7 @@ public abstract class BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Element did not become clickable: " + elementName, e);
             takeScreenshot("wait_clickable_error_" + elementName);
-            throw new RuntimeException("Element did not become clickable: " + elementName, e);
+            throw new ElementException("Element did not become clickable", elementName, "WAIT_CLICKABLE", e);
         }
     }
 
@@ -148,7 +149,7 @@ public abstract class BasePage {
             LoggerUtil.logInfo(logger, "Scrolled to element: " + elementName);
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to scroll to element: " + elementName, e);
-            throw new RuntimeException("Failed to scroll to element: " + elementName, e);
+            throw new ElementException("Failed to scroll to element", elementName, "SCROLL", e);
         }
     }
 
@@ -162,7 +163,7 @@ public abstract class BasePage {
             LoggerUtil.logInfo(logger, "Page loaded completely");
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Page did not load completely", e);
-            throw new RuntimeException("Page did not load completely", e);
+            throw new ElementException("Page did not load completely", "PAGE", "PAGE_LOAD", e);
         }
     }
 

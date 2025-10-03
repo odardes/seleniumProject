@@ -13,7 +13,6 @@ import org.testng.Assert;
 public class CareersPage extends BasePage {
     private static final Logger logger = LoggerUtil.getLogger(CareersPage.class);
 
-    // Locators specific to CareersPage
     private final By locationsSectionLocator = By.xpath(Locators.CAREERS_LOCATIONS_SECTION);
     private final By teamsSectionLocator = By.xpath(Locators.CAREERS_TEAMS_SECTION);
     private final By lifeAtInsiderSectionLocator = By.xpath(Locators.CAREERS_LIFE_AT_INSIDER_SECTION);
@@ -24,7 +23,7 @@ public class CareersPage extends BasePage {
     public void verifyCareersPageLoaded() {
         try {
             waitForPageLoad();
-            
+
             // Verify URL contains careers
             String currentUrl = driver.getCurrentUrl();
             Assert.assertTrue(currentUrl.contains("careers"), 
