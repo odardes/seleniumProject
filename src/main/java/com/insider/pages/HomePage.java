@@ -8,6 +8,7 @@ import com.insider.utils.WebDriverFactory;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 /**
@@ -68,19 +69,21 @@ public class HomePage extends BasePage {
         try {
             scrollToElement(companyMenuLocator, COMPANY_MENU);
             WebElement companyMenu = waitForElementVisible(companyMenuLocator, COMPANY_MENU);
-            
-            // Hover over the Company menu
-            org.openqa.selenium.interactions.Actions actions = new org.openqa.selenium.interactions.Actions(driver);
+
+            Actions actions = new Actions(driver);
             actions.moveToElement(companyMenu).perform();
             
-            // Wait a moment for dropdown to appear
             Thread.sleep(1000);
-            
-            LoggerUtil.logInfo(logger, "Hovered over Company menu");
-        } catch (Exception e) {
-            LoggerUtil.logError(logger, "Failed to hover over Company menu", e);
+            LoggerUtil.logInfo(logger, "Hovered over " + COMPANY_MENU);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            LoggerUtil.logError(logger, "Thread interrupted while waiting for dropdown", e);
             takeScreenshot("company_menu_hover_error");
-            throw new HomePageException("Failed to hover over Company Menu" , "Hover", COMPANY_MENU, e);
+            throw new HomePageException("Thread interrupted while waiting for " + COMPANY_MENU + " dropdown", "Hover", COMPANY_MENU, e);
+        } catch (Exception e) {
+            LoggerUtil.logError(logger, "Failed to hover over " + COMPANY_MENU, e);
+            takeScreenshot("company_menu_hover_error");
+            throw new HomePageException("Failed to hover over " + COMPANY_MENU, "Hover", COMPANY_MENU, e);
         }
     }
 
@@ -89,10 +92,8 @@ public class HomePage extends BasePage {
      */
     public void clickCareersLink() {
         try {
-            // First hover over Company menu to reveal dropdown
             hoverOverCompanyMenu();
             
-            // Wait for Careers link to be clickable and click it
             scrollToElement(careersLinkLocator, CAREERS_LINK);
             clickElement(careersLinkLocator, CAREERS_LINK);
             
