@@ -8,6 +8,11 @@ import org.apache.logging.log4j.Logger;
  */
 public class LoggerUtil {
     
+    // Private constructor to prevent instantiation
+    private LoggerUtil() {
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+    }
+    
     /**
      * Get logger for the specified class
      * @param clazz class for which to get logger
@@ -80,13 +85,5 @@ public class LoggerUtil {
     public static void logInfo(Logger logger, String message) {
         logger.info("INFO: {}", message);
     }
-    
-    /**
-     * Log debug
-     * @param logger logger instance
-     * @param message debug message
-     */
-    public static void logDebug(Logger logger, String message) {
-        logger.debug("DEBUG: {}", message);
-    }
+
 }

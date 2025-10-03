@@ -13,29 +13,31 @@ import java.time.Duration;
  * Factory class for WebDriver management
  */
 public class WebDriverFactory {
+    
+    // Private constructor to prevent instantiation
+    private WebDriverFactory() {
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+    }
+    
     private static final Logger logger = LogManager.getLogger(WebDriverFactory.class);
     private static WebDriver driver;
     private static WebDriverWait wait;
 
     /**
      * Initialize WebDriver instance
-     * @return WebDriver instance
      */
-    public static WebDriver initializeDriver() {
+    public static void initializeDriver() {
         ConfigManager config = ConfigManager.getInstance();
         
         try {
-            switch (config.getBrowser().toLowerCase()) {
-                case "chrome":
-                    setupChromeDriver();
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported browser: " + config.getBrowser());
+            if (config.getBrowser().equalsIgnoreCase("chrome")) {
+                setupChromeDriver();
+            } else {
+                throw new IllegalArgumentException("Unsupported browser: " + config.getBrowser());
             }
             
             configureDriver();
             logger.info("WebDriver initialized successfully");
-            return driver;
         } catch (Exception e) {
             logger.error("Failed to initialize WebDriver", e);
             throw new RuntimeException("WebDriver initialization failed", e);
