@@ -231,4 +231,20 @@ public abstract class BasePage {
             LoggerUtil.logWarning(logger, "Loading spinner not found or already disappeared");
         }
     }
+
+    /**
+     * Get current page URL
+     * @return current URL
+     */
+    public String getCurrentUrl() {
+        return driver.getCurrentUrl();
+    }
+
+    /**
+     * Get current page title
+     * @return current page title
+     */
+    public String getCurrentTitle() {
+        return driver.getTitle();
+    }
 }
