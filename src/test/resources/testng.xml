@@ -16,12 +16,6 @@
         </classes>
     </test>
     
-    <!-- Listener for reporting and screenshots -->
-    <listeners>
-        <listener class-name="org.testng.reporters.HTMLReporter"/>
-        <listener class-name="org.testng.reporters.JUnitReportReporter"/>
-    </listeners>
-    
     <!-- Suite parameters -->
     <parameter name="browser" value="chrome"/>
     <parameter name="headless" value="false"/>
