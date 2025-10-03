@@ -32,7 +32,7 @@ public class InsiderCareersTest {
             
             // Initialize WebDriver
             WebDriverFactory.initializeDriver();
-            
+
             // Initialize page objects
             homePage = new HomePage();
             careersPage = new CareersPage();
@@ -46,17 +46,14 @@ public class InsiderCareersTest {
     }
 
     /**
-     * Test Step 1: Visit https://useinsider.com/ and check Insider home page is opened or not
+     * Test Step 1: Visit <a href="https://useinsider.com/">...</a> and check Insider home page is opened or not
      */
     @Test(priority = 1, description = "Verify Insider home page is opened successfully")
     public void testHomePageOpened() {
         try {
             LoggerUtil.logStep(logger, "Step 1: Navigate to Insider home page and verify it's opened");
             
-            // Navigate to home page
             homePage.navigateToHomePage();
-            
-            // Verify home page is loaded
             homePage.verifyHomePageLoaded();
             
             LoggerUtil.logAssertion(logger, "Home page opened successfully - Step 1 PASSED");
@@ -75,13 +72,8 @@ public class InsiderCareersTest {
         try {
             LoggerUtil.logStep(logger, "Step 2: Navigate to Careers page and verify Locations, Teams, and Life at Insider sections");
             
-            // Navigate to careers page (using direct navigation as fallback)
             homePage.navigateToCareersPage();
-            
-            // Verify careers page is loaded
             careersPage.verifyCareersPageLoaded();
-            
-            // Verify all career sections are displayed
             careersPage.verifyAllCareerSectionsDisplayed();
             
             LoggerUtil.logAssertion(logger, "All career sections displayed successfully - Step 2 PASSED");
@@ -92,7 +84,7 @@ public class InsiderCareersTest {
     }
 
     /**
-     * Test Step 3: Go to https://useinsider.com/careers/quality-assurance/, 
+     * Test Step 3: Go to <a href="https://useinsider.com/careers/quality-assurance/">...</a>,
      * click "See all QA jobs", filter jobs by Location: "Istanbul, Turkey", 
      * and Department: "Quality Assurance", check the presence of the jobs list
      */
@@ -101,21 +93,13 @@ public class InsiderCareersTest {
         try {
             LoggerUtil.logStep(logger, "Step 3: Navigate to QA careers page, apply filters, and verify job list");
             
-            // Navigate to QA careers page
             qaCareersPage.navigateToQACareersPage();
-            
-            // Click "See all QA jobs" button
             qaCareersPage.clickSeeAllQaJobs();
-            
-            // Apply job filters (Location: Istanbul, Turkey and Department: Quality Assurance)
             qaCareersPage.applyJobFilters();
-            
-            // Verify job list is displayed
             qaCareersPage.verifyJobListDisplayed();
             
             int jobCount = qaCareersPage.getJobCount();
             LoggerUtil.logInfo(logger, "Found " + jobCount + " jobs after applying filters");
-            
             Assert.assertTrue(jobCount > 0, "No jobs found after applying filters");
             
             LoggerUtil.logAssertion(logger, "Job list displayed successfully with " + jobCount + " jobs - Step 3 PASSED");
@@ -133,8 +117,7 @@ public class InsiderCareersTest {
     public void testJobDataValidation() {
         try {
             LoggerUtil.logStep(logger, "Step 4: Validate all jobs contain expected position, department, and location text");
-            
-            // Validate all job data
+
             qaCareersPage.validateAllJobData();
             
             LoggerUtil.logAssertion(logger, "All job data validation passed - Step 4 PASSED");
@@ -153,10 +136,7 @@ public class InsiderCareersTest {
         try {
             LoggerUtil.logStep(logger, "Step 5: Click View Role button and verify Lever application redirect");
             
-            // Click View Role button
             qaCareersPage.clickViewRoleButton();
-            
-            // Verify redirection to Lever application form
             qaCareersPage.verifyLeverApplicationRedirect();
             
             LoggerUtil.logAssertion(logger, "Successfully redirected to Lever application form - Step 5 PASSED");
