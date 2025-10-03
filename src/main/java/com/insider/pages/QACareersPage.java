@@ -9,11 +9,9 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +21,6 @@ public class QACareersPage extends BasePage {
     private static final Logger logger = LoggerUtil.getLogger(QACareersPage.class);
     private final ConfigManager config = ConfigManager.getInstance();
 
-    // Constants for element names
     private static final String SEE_ALL_QA_JOBS_BUTTON = "See All QA Jobs Button";
     private static final String JOB_LIST_CONTAINER = "Job List Container";
     private static final String LOCATION_FILTER_DROPDOWN = "Location Filter Dropdown";
@@ -32,7 +29,6 @@ public class QACareersPage extends BasePage {
     private static final String VIEW_ROLE_BUTTON = "View Role Button";
     private static final String LEVER_APPLICATION_FORM = "Lever Application Form";
     
-    // Locators specific to QACareersPage
     private final By seeAllQaJobsButtonLocator = By.xpath(Locators.QA_SEE_ALL_JOBS_BUTTON);
     private final By jobListContainerLocator = By.xpath(Locators.JOB_LIST_CONTAINER);
     private final By jobCardLocator = By.xpath(Locators.JOB_CARD);
@@ -40,10 +36,8 @@ public class QACareersPage extends BasePage {
     private final By jobDepartmentLocator = By.xpath(Locators.JOB_DEPARTMENT);
     private final By jobLocationLocator = By.xpath(Locators.JOB_LOCATION);
     private final By viewRoleButtonLocator = By.xpath(Locators.VIEW_ROLE_BUTTON);
-
-    // Filter locators (more specific for job listings)
-    private final By locationFilterDropdownLocator = By.xpath("//select[contains(@name, 'location')] | //div[contains(@class, 'location-filter')]//button");
-    private final By departmentFilterDropdownLocator = By.xpath("//select[contains(@name, 'department')] | //div[contains(@class, 'department-filter')]//button");
+    private final By locationFilterDropdownLocator = By.xpath(Locators.LOCATION_FILTER_DROPDOWN);
+    private final By departmentFilterDropdownLocator = By.xpath(Locators.DEPARTMENT_FILTER_DROPDOWN);
 
     /**
      * Navigate to QA careers page
@@ -82,38 +76,13 @@ public class QACareersPage extends BasePage {
      */
     public void filterByLocation(String location) {
         try {
-            // Try different approaches for location filter
-            boolean filterApplied = false;
+            boolean filterApplied = applyStandardLocationFilter(location);
             
-            // Try dropdown approach first
-            try {
-                WebElement locationDropdown = waitForElementVisible(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
-                if (locationDropdown.getTagName().equals("select")) {
-                    Select select = new Select(locationDropdown);
-                    select.selectByVisibleText(location);
-                    filterApplied = true;
-                } else {
-                    // For button-based filters
-                    clickElement(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
-                    // Wait for options to appear and click the desired one
-                    By locationOptionLocator = By.xpath(String.format(Locators.LOCATION_FILTER_OPTION, location, location));
-                    clickElement(locationOptionLocator, "Location Option: " + location);
-                    filterApplied = true;
-                }
-            } catch (Exception e) {
-                LoggerUtil.logWarning(logger, "Standard filter approach failed, trying alternative methods");
-            }
-            
-            // Alternative approach: look for any clickable element with the location text
             if (!filterApplied) {
-                By alternativeLocationLocator = By.xpath("//*[contains(text(), '" + location + "') and (self::a or self::button or self::option)]");
-                clickElement(alternativeLocationLocator, "Alternative Location Filter: " + location);
+                applyAlternativeLocationFilter(location);
             }
             
-            // Wait for filter to apply
-            Thread.sleep(2000);
-            waitForLoadingToComplete();
-            
+            waitForFilterToApply();
             LoggerUtil.logInfo(logger, "Applied location filter: " + location);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -128,41 +97,61 @@ public class QACareersPage extends BasePage {
     }
 
     /**
+     * Apply standard location filter using dropdown or button approach
+     * @param location location to filter by
+     * @return true if filter was applied successfully
+     */
+    private boolean applyStandardLocationFilter(String location) {
+        try {
+            WebElement locationDropdown = waitForElementVisible(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
+            if (locationDropdown.getTagName().equals("select")) {
+                Select select = new Select(locationDropdown);
+                select.selectByVisibleText(location);
+            } else {
+                // For button-based filters
+                clickElement(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
+                // Wait for options to appear and click the desired one
+                By locationOptionLocator = By.xpath(String.format(Locators.LOCATION_FILTER_OPTION, location, location));
+                clickElement(locationOptionLocator, "Location Option: " + location);
+            }
+            return true;
+        } catch (Exception e) {
+            LoggerUtil.logWarning(logger, "Standard location filter approach failed, trying alternative methods");
+            return false;
+        }
+    }
+
+    /**
+     * Apply alternative location filter by finding clickable elements with location text
+     * @param location location to filter by
+     */
+    private void applyAlternativeLocationFilter(String location) {
+        By alternativeLocationLocator = By.xpath("//*[contains(text(), '" + location + "') and (self::a or self::button or self::option)]");
+        clickElement(alternativeLocationLocator, "Alternative Location Filter: " + location);
+    }
+
+    /**
+     * Wait for filter to apply and loading to complete
+     * @throws InterruptedException if thread is interrupted during sleep
+     */
+    private void waitForFilterToApply() throws InterruptedException {
+        Thread.sleep(2000);
+        waitForLoadingToComplete();
+    }
+
+    /**
      * Filter jobs by department
      * @param department department to filter by
      */
     public void filterByDepartment(String department) {
         try {
-            boolean filterApplied = false;
+            boolean filterApplied = applyStandardDepartmentFilter(department);
             
-            try {
-                WebElement departmentDropdown = waitForElementVisible(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
-                if (departmentDropdown.getTagName().equals("select")) {
-                    Select select = new Select(departmentDropdown);
-                    select.selectByVisibleText(department);
-                    filterApplied = true;
-                } else {
-                    // For button-based filters
-                    clickElement(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
-                    // Wait for options to appear and click the desired one
-                    By departmentOptionLocator = By.xpath(String.format(Locators.DEPARTMENT_FILTER_OPTION, department, department));
-                    clickElement(departmentOptionLocator, "Department Option: " + department);
-                    filterApplied = true;
-                }
-            } catch (Exception e) {
-                LoggerUtil.logWarning(logger, "Standard department filter approach failed, trying alternative methods");
-            }
-            
-            // Alternative approach: look for any clickable element with the department text
             if (!filterApplied) {
-                By alternativeDepartmentLocator = By.xpath("//*[contains(text(), '" + department + "') and (self::a or self::button or self::option)]");
-                clickElement(alternativeDepartmentLocator, "Alternative Department Filter: " + department);
+                applyAlternativeDepartmentFilter(department);
             }
             
-            // Wait for filter to apply
-            Thread.sleep(2000);
-            waitForLoadingToComplete();
-            
+            waitForFilterToApply();
             LoggerUtil.logInfo(logger, "Applied department filter: " + department);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -174,6 +163,40 @@ public class QACareersPage extends BasePage {
             takeScreenshot("department_filter_error");
             throw new QACareersPageException("Failed to apply department filter: " + department, "Filter", DEPARTMENT_FILTER_DROPDOWN, e);
         }
+    }
+
+    /**
+     * Apply standard department filter using dropdown or button approach
+     * @param department department to filter by
+     * @return true if filter was applied successfully
+     */
+    private boolean applyStandardDepartmentFilter(String department) {
+        try {
+            WebElement departmentDropdown = waitForElementVisible(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
+            if (departmentDropdown.getTagName().equals("select")) {
+                Select select = new Select(departmentDropdown);
+                select.selectByVisibleText(department);
+            } else {
+                // For button-based filters
+                clickElement(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
+                // Wait for options to appear and click the desired one
+                By departmentOptionLocator = By.xpath(String.format(Locators.DEPARTMENT_FILTER_OPTION, department, department));
+                clickElement(departmentOptionLocator, "Department Option: " + department);
+            }
+            return true;
+        } catch (Exception e) {
+            LoggerUtil.logWarning(logger, "Standard department filter approach failed, trying alternative methods");
+            return false;
+        }
+    }
+
+    /**
+     * Apply alternative department filter by finding clickable elements with department text
+     * @param department department to filter by
+     */
+    private void applyAlternativeDepartmentFilter(String department) {
+        By alternativeDepartmentLocator = By.xpath("//*[contains(text(), '" + department + "') and (self::a or self::button or self::option)]");
+        clickElement(alternativeDepartmentLocator, "Alternative Department Filter: " + department);
     }
 
     /**
