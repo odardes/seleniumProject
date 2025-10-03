@@ -6,6 +6,7 @@ import com.insider.utils.LoggerUtil;
 import com.insider.utils.WebDriverFactory;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 /**

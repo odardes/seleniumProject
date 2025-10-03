@@ -6,6 +6,7 @@ import com.insider.utils.LoggerUtil;
 import com.insider.utils.WebDriverFactory;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -288,8 +289,8 @@ public class QACareersPage extends BasePage {
                 WebElement jobCard = jobCards.get(i);
                 try {
                     WebElement viewRoleButton = jobCard.findElement(viewRoleButtonLocator);
-                    scrollToElement(viewRoleButton, "View Role Button");
-                    clickElement(viewRoleButton, "View Role Button for job " + (i + 1));
+                    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", viewRoleButton);
+                    viewRoleButton.click();
                     
                     LoggerUtil.logInfo(logger, "Clicked View Role button for job " + (i + 1));
                     return;
