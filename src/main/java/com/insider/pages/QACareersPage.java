@@ -1,6 +1,7 @@
 package com.insider.pages;
 
 import com.insider.constants.Locators;
+import com.insider.exceptions.QACareersPageException;
 import com.insider.utils.ConfigManager;
 import com.insider.utils.LoggerUtil;
 import com.insider.utils.WebDriverFactory;
@@ -22,6 +23,15 @@ public class QACareersPage extends BasePage {
     private static final Logger logger = LoggerUtil.getLogger(QACareersPage.class);
     private final ConfigManager config = ConfigManager.getInstance();
 
+    // Constants for element names
+    private static final String SEE_ALL_QA_JOBS_BUTTON = "See All QA Jobs Button";
+    private static final String JOB_LIST_CONTAINER = "Job List Container";
+    private static final String LOCATION_FILTER_DROPDOWN = "Location Filter Dropdown";
+    private static final String DEPARTMENT_FILTER_DROPDOWN = "Department Filter Dropdown";
+    private static final String JOB_CARD = "Job Card";
+    private static final String VIEW_ROLE_BUTTON = "View Role Button";
+    private static final String LEVER_APPLICATION_FORM = "Lever Application Form";
+    
     // Locators specific to QACareersPage
     private final By seeAllQaJobsButtonLocator = By.xpath(Locators.QA_SEE_ALL_JOBS_BUTTON);
     private final By jobListContainerLocator = By.xpath(Locators.JOB_LIST_CONTAINER);
@@ -46,7 +56,7 @@ public class QACareersPage extends BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to navigate to QA careers page", e);
             takeScreenshot("qa_careers_navigation_error");
-            throw new RuntimeException("Failed to navigate to QA careers page", e);
+            throw new QACareersPageException("Failed to navigate to QA careers page", "Navigation", "QA Careers Page", e);
         }
     }
 
@@ -55,14 +65,14 @@ public class QACareersPage extends BasePage {
      */
     public void clickSeeAllQaJobs() {
         try {
-            scrollToElement(seeAllQaJobsButtonLocator, "See All QA Jobs Button");
-            clickElement(seeAllQaJobsButtonLocator, "See All QA Jobs Button");
+            scrollToElement(seeAllQaJobsButtonLocator, SEE_ALL_QA_JOBS_BUTTON);
+            clickElement(seeAllQaJobsButtonLocator, SEE_ALL_QA_JOBS_BUTTON);
             waitForPageLoad();
             LoggerUtil.logInfo(logger, "Clicked on 'See all QA jobs' button");
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to click 'See all QA jobs' button", e);
             takeScreenshot("see_all_qa_jobs_error");
-            throw new RuntimeException("Failed to click 'See all QA jobs' button", e);
+            throw new QACareersPageException("Failed to click 'See all QA jobs' button", "Click", SEE_ALL_QA_JOBS_BUTTON, e);
         }
     }
 
@@ -77,14 +87,14 @@ public class QACareersPage extends BasePage {
             
             // Try dropdown approach first
             try {
-                WebElement locationDropdown = waitForElementVisible(locationFilterDropdownLocator, "Location Filter Dropdown");
+                WebElement locationDropdown = waitForElementVisible(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
                 if (locationDropdown.getTagName().equals("select")) {
                     Select select = new Select(locationDropdown);
                     select.selectByVisibleText(location);
                     filterApplied = true;
                 } else {
                     // For button-based filters
-                    clickElement(locationFilterDropdownLocator, "Location Filter Dropdown");
+                    clickElement(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
                     // Wait for options to appear and click the desired one
                     By locationOptionLocator = By.xpath(String.format(Locators.LOCATION_FILTER_OPTION, location, location));
                     clickElement(locationOptionLocator, "Location Option: " + location);
@@ -105,10 +115,15 @@ public class QACareersPage extends BasePage {
             waitForLoadingToComplete();
             
             LoggerUtil.logInfo(logger, "Applied location filter: " + location);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            LoggerUtil.logError(logger, "Thread interrupted while applying location filter: " + location, e);
+            takeScreenshot("location_filter_error");
+            throw new QACareersPageException("Thread interrupted while applying location filter: " + location, "Filter", LOCATION_FILTER_DROPDOWN, e);
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to apply location filter: " + location, e);
             takeScreenshot("location_filter_error");
-            throw new RuntimeException("Failed to apply location filter: " + location, e);
+            throw new QACareersPageException("Failed to apply location filter: " + location, "Filter", LOCATION_FILTER_DROPDOWN, e);
         }
     }
 
@@ -118,19 +133,17 @@ public class QACareersPage extends BasePage {
      */
     public void filterByDepartment(String department) {
         try {
-            // Try different approaches for department filter
             boolean filterApplied = false;
             
-            // Try dropdown approach first
             try {
-                WebElement departmentDropdown = waitForElementVisible(departmentFilterDropdownLocator, "Department Filter Dropdown");
+                WebElement departmentDropdown = waitForElementVisible(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
                 if (departmentDropdown.getTagName().equals("select")) {
                     Select select = new Select(departmentDropdown);
                     select.selectByVisibleText(department);
                     filterApplied = true;
                 } else {
                     // For button-based filters
-                    clickElement(departmentFilterDropdownLocator, "Department Filter Dropdown");
+                    clickElement(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
                     // Wait for options to appear and click the desired one
                     By departmentOptionLocator = By.xpath(String.format(Locators.DEPARTMENT_FILTER_OPTION, department, department));
                     clickElement(departmentOptionLocator, "Department Option: " + department);
@@ -151,10 +164,15 @@ public class QACareersPage extends BasePage {
             waitForLoadingToComplete();
             
             LoggerUtil.logInfo(logger, "Applied department filter: " + department);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            LoggerUtil.logError(logger, "Thread interrupted while applying department filter: " + department, e);
+            takeScreenshot("department_filter_error");
+            throw new QACareersPageException("Thread interrupted while applying department filter: " + department, "Filter", DEPARTMENT_FILTER_DROPDOWN, e);
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to apply department filter: " + department, e);
             takeScreenshot("department_filter_error");
-            throw new RuntimeException("Failed to apply department filter: " + department, e);
+            throw new QACareersPageException("Failed to apply department filter: " + department, "Filter", DEPARTMENT_FILTER_DROPDOWN, e);
         }
     }
 
@@ -172,7 +190,7 @@ public class QACareersPage extends BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to apply job filters", e);
             takeScreenshot("job_filters_error");
-            throw new RuntimeException("Failed to apply job filters", e);
+            throw new QACareersPageException("Failed to apply job filters", "Filter", "Job Filters", e);
         }
     }
 
@@ -183,7 +201,7 @@ public class QACareersPage extends BasePage {
         try {
             waitForLoadingToComplete();
             
-            boolean isJobListDisplayed = isElementDisplayed(jobListContainerLocator, "Job List Container");
+            boolean isJobListDisplayed = isElementDisplayed(jobListContainerLocator, JOB_LIST_CONTAINER);
             Assert.assertTrue(isJobListDisplayed, "Job list is not displayed after applying filters");
             
             // Check if there are any job cards
@@ -194,7 +212,7 @@ public class QACareersPage extends BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Job list verification failed", e);
             takeScreenshot("job_list_verification_error");
-            throw new RuntimeException("Job list verification failed", e);
+            throw new QACareersPageException("Job list verification failed", "Verification", JOB_LIST_CONTAINER, e);
         }
     }
 
@@ -204,14 +222,14 @@ public class QACareersPage extends BasePage {
      */
     public List<WebElement> getAllJobCards() {
         try {
-            waitForElementVisible(jobListContainerLocator, "Job List Container");
+            waitForElementVisible(jobListContainerLocator, JOB_LIST_CONTAINER);
             List<WebElement> jobCards = driver.findElements(jobCardLocator);
             LoggerUtil.logInfo(logger, "Found " + jobCards.size() + " job cards");
             return jobCards;
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to get job cards", e);
             takeScreenshot("get_job_cards_error");
-            throw new RuntimeException("Failed to get job cards", e);
+            throw new QACareersPageException("Failed to get job cards", "Retrieval", JOB_CARD, e);
         }
     }
 
@@ -272,7 +290,7 @@ public class QACareersPage extends BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Job data validation failed", e);
             takeScreenshot("job_data_validation_error");
-            throw new RuntimeException("Job data validation failed", e);
+            throw new QACareersPageException("Job data validation failed", "Validation", "Job Data", e);
         }
     }
 
@@ -299,11 +317,11 @@ public class QACareersPage extends BasePage {
                 }
             }
             
-            throw new RuntimeException("No View Role button found in any job card");
+            throw new QACareersPageException("No View Role button found in any job card", "Click", VIEW_ROLE_BUTTON);
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to click View Role button", e);
             takeScreenshot("view_role_click_error");
-            throw new RuntimeException("Failed to click View Role button", e);
+            throw new QACareersPageException("Failed to click View Role button", "Click", VIEW_ROLE_BUTTON, e);
         }
     }
 
@@ -319,14 +337,14 @@ public class QACareersPage extends BasePage {
                 "Not redirected to Lever application form. Expected URL to contain 'jobs.lever.co', Actual: " + currentUrl);
             
             // Verify Lever application form is displayed
-            boolean isFormDisplayed = isElementDisplayed(By.xpath(Locators.LEVER_APPLICATION_FORM), "Lever Application Form");
+            boolean isFormDisplayed = isElementDisplayed(By.xpath(Locators.LEVER_APPLICATION_FORM), LEVER_APPLICATION_FORM);
             Assert.assertTrue(isFormDisplayed, "Lever application form is not displayed");
             
             LoggerUtil.logAssertion(logger, "Successfully redirected to Lever application form: " + currentUrl);
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Lever application redirect verification failed", e);
             takeScreenshot("lever_redirect_error");
-            throw new RuntimeException("Lever application redirect verification failed", e);
+            throw new QACareersPageException("Lever application redirect verification failed", "Verification", LEVER_APPLICATION_FORM, e);
         }
     }
 
