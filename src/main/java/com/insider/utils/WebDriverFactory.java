@@ -1,5 +1,6 @@
 package com.insider.utils;
 
+import com.insider.exceptions.WebDriverFactoryException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -33,14 +34,14 @@ public class WebDriverFactory {
             if (config.getBrowser().equalsIgnoreCase("chrome")) {
                 setupChromeDriver();
             } else {
-                throw new IllegalArgumentException("Unsupported browser: " + config.getBrowser());
+                throw new IllegalArgumentException("Unsupported browser: %s".formatted(config.getBrowser()));
             }
             
             configureDriver();
             logger.info("WebDriver initialized successfully");
         } catch (Exception e) {
             logger.error("Failed to initialize WebDriver", e);
-            throw new RuntimeException("WebDriver initialization failed", e);
+            throw new WebDriverFactoryException("WebDriver initialization failed", "INITIALIZATION", config.getBrowser(), e);
         }
     }
 
@@ -63,7 +64,7 @@ public class WebDriverFactory {
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-gpu");
-        options.addArguments("--window-size=" + config.getWindowSize());
+        options.addArguments("--window-size=%s".formatted(config.getWindowSize()));
         options.addArguments("--remote-allow-origins=*");
         
         // Disable infobars
@@ -143,10 +144,10 @@ public class WebDriverFactory {
         }
         try {
             driver.get(url);
-            logger.info("Navigated to: " + url);
+            logger.info("Navigated to: {}", url);
         } catch (Exception e) {
-            logger.error("Failed to navigate to: " + url, e);
-            throw new RuntimeException("Navigation failed", e);
+            logger.error("Failed to navigate to: {}", url, e);
+            throw new WebDriverFactoryException("Navigation failed", "NAVIGATION", null, e);
         }
     }
 
