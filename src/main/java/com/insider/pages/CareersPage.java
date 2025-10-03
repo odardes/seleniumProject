@@ -13,6 +13,10 @@ import org.testng.Assert;
  */
 public class CareersPage extends BasePage {
     private static final Logger logger = LoggerUtil.getLogger(CareersPage.class);
+    
+    private static final String LOCATIONS_SECTION_NAME = "Locations Section";
+    private static final String TEAMS_SECTION_NAME = "Teams Section";
+    private static final String LIFE_AT_INSIDER_SECTION_NAME = "Life at Insider Section";
 
     private final By locationsSectionLocator = By.xpath(Locators.CAREERS_LOCATIONS_SECTION);
     private final By teamsSectionLocator = By.xpath(Locators.CAREERS_TEAMS_SECTION);
@@ -48,12 +52,12 @@ public class CareersPage extends BasePage {
      */
     public void verifyLocationsSectionDisplayed() {
         try {
-            scrollToElement(locationsSectionLocator, "Locations Section");
-            boolean isDisplayed = isElementDisplayed(locationsSectionLocator, "Locations Section");
+            scrollToElement(locationsSectionLocator, LOCATIONS_SECTION_NAME);
+            boolean isDisplayed = isElementDisplayed(locationsSectionLocator, LOCATIONS_SECTION_NAME);
             
             Assert.assertTrue(isDisplayed, "Locations section is not displayed on careers page");
             
-            WebElement locationsSection = waitForElementVisible(locationsSectionLocator, "Locations Section");
+            WebElement locationsSection = waitForElementVisible(locationsSectionLocator, LOCATIONS_SECTION_NAME);
             String sectionText = locationsSection.getText();
             Assert.assertFalse(sectionText.trim().isEmpty(), "Locations section appears to be empty");
 
@@ -63,7 +67,7 @@ public class CareersPage extends BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Locations section verification failed", e);
             takeScreenshot("locations_section_error");
-            throw new CareersPageException("Locations section verification failed", "Locations Section", "Section Display and Content Verification", e);
+            throw new CareersPageException("Locations section verification failed", LOCATIONS_SECTION_NAME, "Section Display and Content Verification", e);
         }
     }
 
@@ -72,12 +76,12 @@ public class CareersPage extends BasePage {
      */
     public void verifyTeamsSectionDisplayed() {
         try {
-            scrollToElement(teamsSectionLocator, "Teams Section");
-            boolean isDisplayed = isElementDisplayed(teamsSectionLocator, "Teams Section");
+            scrollToElement(teamsSectionLocator, TEAMS_SECTION_NAME);
+            boolean isDisplayed = isElementDisplayed(teamsSectionLocator, TEAMS_SECTION_NAME);
             
             Assert.assertTrue(isDisplayed, "Teams section is not displayed on careers page");
             
-            WebElement teamsSection = waitForElementVisible(teamsSectionLocator, "Teams Section");
+            WebElement teamsSection = waitForElementVisible(teamsSectionLocator, TEAMS_SECTION_NAME);
             String sectionText = teamsSection.getText();
             Assert.assertFalse(sectionText.trim().isEmpty(), "Teams section appears to be empty");
 
@@ -87,7 +91,7 @@ public class CareersPage extends BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Teams section verification failed", e);
             takeScreenshot("teams_section_error");
-            throw new CareersPageException("Teams section verification failed", "Teams Section", "Section Display and Content Verification", e);
+            throw new CareersPageException("Teams section verification failed", TEAMS_SECTION_NAME, "Section Display and Content Verification", e);
         }
     }
 
@@ -96,12 +100,12 @@ public class CareersPage extends BasePage {
      */
     public void verifyLifeAtInsiderSectionDisplayed() {
         try {
-            scrollToElement(lifeAtInsiderSectionLocator, "Life at Insider Section");
-            boolean isDisplayed = isElementDisplayed(lifeAtInsiderSectionLocator, "Life at Insider Section");
+            scrollToElement(lifeAtInsiderSectionLocator, LIFE_AT_INSIDER_SECTION_NAME);
+            boolean isDisplayed = isElementDisplayed(lifeAtInsiderSectionLocator, LIFE_AT_INSIDER_SECTION_NAME);
             
             Assert.assertTrue(isDisplayed, "Life at Insider section is not displayed on careers page");
             
-            WebElement lifeSection = waitForElementVisible(lifeAtInsiderSectionLocator, "Life at Insider Section");
+            WebElement lifeSection = waitForElementVisible(lifeAtInsiderSectionLocator, LIFE_AT_INSIDER_SECTION_NAME);
             String sectionText = lifeSection.getText();
             Assert.assertFalse(sectionText.trim().isEmpty(), "Life at Insider section appears to be empty");
 
@@ -111,7 +115,7 @@ public class CareersPage extends BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Life at Insider section verification failed", e);
             takeScreenshot("life_at_insider_section_error");
-            throw new CareersPageException("Life at Insider section verification failed", "Life at Insider Section", "Section Display and Content Verification", e);
+            throw new CareersPageException("Life at Insider section verification failed", LIFE_AT_INSIDER_SECTION_NAME, "Section Display and Content Verification", e);
         }
     }
 
