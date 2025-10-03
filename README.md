@@ -14,12 +14,13 @@ The automation test covers the following 5 steps:
 
 ## Technology Stack
 
-- **Language**: Java 11+
-- **Framework**: TestNG
-- **Automation**: Selenium WebDriver 4.15.0
+- **Language**: Java 21 (Latest LTS)
+- **Framework**: TestNG 7.10.2
+- **Automation**: Selenium WebDriver 4.23.0
 - **Build Tool**: Maven
-- **Browser**: Chrome (with WebDriverManager)
-- **Logging**: Log4j2
+- **Browser**: Chrome (with WebDriverManager 5.8.0)
+- **Logging**: Log4j2 2.24.1
+- **Utilities**: Apache Commons Lang 3.17.0
 - **Design Pattern**: Page Object Model (POM)
 
 ## Project Structure
@@ -59,7 +60,7 @@ sena_guventurk_case/
 
 ## Prerequisites
 
-- Java 11 or higher
+- Java 21 or higher (Latest LTS recommended)
 - Maven 3.6 or higher
 - Chrome Browser
 - IDE (IntelliJ IDEA or Eclipse)
