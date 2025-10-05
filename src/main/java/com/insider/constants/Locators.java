@@ -13,6 +13,7 @@ public final class Locators {
     // HomePage Locators
     public static final String HOME_COMPANY_MENU = "//nav//a[contains(text(), 'Company')]";
     public static final String HOME_CAREERS_LINK = "//a[contains(text(), 'Careers')]";
+    public static final String ACCEPT_COOKIES_BUTTON = "a#wt-cli-accept-all-btn";
     
     // CareersPage Locators
     public static final String CAREERS_LOCATIONS_SECTION = "#career-our-location";
