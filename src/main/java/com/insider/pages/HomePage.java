@@ -63,6 +63,43 @@ public class HomePage extends BasePage {
     }
 
     /**
+     * Navigate to Careers page
+     */
+    public void navigateToCareersPage() {
+        try {
+            clickCareersLink();
+            waitForPageLoad();
+            LoggerUtil.logInfo(logger, "Navigated to Careers page");
+        } catch (Exception e) {
+            LoggerUtil.logError(logger, "Failed to navigate to Careers page", e);
+            takeScreenshot("careers_page_navigation_error");
+            throw new HomePageException("Failed to navigate to Careers page", "Navigation", "Careers Page", e);
+        }
+    }
+
+    /**
+     * Click on Careers link from Company dropdown
+     */
+    public void clickCareersLink() {
+        try {
+            Assert.assertTrue(isCompanyMenuDisplayed(), "Company menu is not displayed, cannot click Careers link");
+
+            hoverOverCompanyMenu();
+
+            Assert.assertTrue(isCareersLinkDisplayed(), "Careers link is not displayed after hovering over Company menu");
+
+            scrollToElement(careersLinkLocator, CAREERS_LINK);
+            clickElement(careersLinkLocator, CAREERS_LINK);
+
+            LoggerUtil.logInfo(logger, "Clicked on Careers link");
+        } catch (Exception e) {
+            LoggerUtil.logError(logger, "Failed to click on Careers link", e);
+            takeScreenshot("careers_link_click_error");
+            throw new HomePageException("Failed to click on Careers link", "Click", CAREERS_LINK, e);
+        }
+    }
+
+    /**
      * Hover over Company menu to reveal dropdown
      */
     public void hoverOverCompanyMenu() {
@@ -84,39 +121,6 @@ public class HomePage extends BasePage {
             LoggerUtil.logError(logger, "Failed to hover over " + COMPANY_MENU, e);
             takeScreenshot("company_menu_hover_error");
             throw new HomePageException("Failed to hover over " + COMPANY_MENU, "Hover", COMPANY_MENU, e);
-        }
-    }
-
-    /**
-     * Click on Careers link from Company dropdown
-     */
-    public void clickCareersLink() {
-        try {
-            hoverOverCompanyMenu();
-            
-            scrollToElement(careersLinkLocator, CAREERS_LINK);
-            clickElement(careersLinkLocator, CAREERS_LINK);
-            
-            LoggerUtil.logInfo(logger, "Clicked on Careers link");
-        } catch (Exception e) {
-            LoggerUtil.logError(logger, "Failed to click on Careers link", e);
-            takeScreenshot("careers_link_click_error");
-            throw new HomePageException("Failed to click on Careers link", "Click", CAREERS_LINK, e);
-        }
-    }
-
-    /**
-     * Navigate to Careers page using direct URL (alternative method)
-     */
-    public void navigateToCareersPage() {
-        try {
-            WebDriverFactory.navigateTo(config.getCareersUrl());
-            waitForPageLoad();
-            LoggerUtil.logInfo(logger, "Navigated directly to Careers page: " + config.getCareersUrl());
-        } catch (Exception e) {
-            LoggerUtil.logError(logger, "Failed to navigate to Careers page", e);
-            takeScreenshot("careers_page_navigation_error");
-            throw new HomePageException("Failed to navigate to Careers page", "Navigation", "Careers Page", e);
         }
     }
 

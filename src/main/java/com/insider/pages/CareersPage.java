@@ -44,26 +44,21 @@ public class CareersPage extends BasePage {
     }
 
     /**
-     * Verify Locations section is displayed
+     * Verify all career page sections are displayed
      */
-    public void verifyLocationsSectionDisplayed() {
+    public void verifyAllCareerSectionsDisplayed() {
         try {
-            scrollToElement(locationsSectionLocator, LOCATIONS_SECTION_NAME);
-            boolean isDisplayed = isElementDisplayed(locationsSectionLocator, LOCATIONS_SECTION_NAME);
-            
-            Assert.assertTrue(isDisplayed, "Locations section is not displayed on careers page");
-            
-            WebElement locationsSection = waitForElementVisible(locationsSectionLocator, LOCATIONS_SECTION_NAME);
-            String sectionText = locationsSection.getText();
-            Assert.assertFalse(sectionText.trim().isEmpty(), "Locations section appears to be empty");
+            LoggerUtil.logInfo(logger, "Verifying all career page sections...");
 
-            LoggerUtil.logInfo(logger, "Locations section content: " + sectionText.substring(0, Math.min(100, sectionText.length())) + "...");
+            verifyTeamsSectionDisplayed();
+            verifyLocationsSectionDisplayed();
+            verifyLifeAtInsiderSectionDisplayed();
 
-            LoggerUtil.logAssertion(logger, "Locations section is displayed and has content");
+            LoggerUtil.logAssertion(logger, "All career page sections (Locations, Teams, Life at Insider) are displayed successfully");
         } catch (Exception e) {
-            LoggerUtil.logError(logger, "Locations section verification failed", e);
-            takeScreenshot("locations_section_error");
-            throw new CareersPageException("Locations section verification failed", LOCATIONS_SECTION_NAME, "Section Display and Content Verification", e);
+            LoggerUtil.logError(logger, "Career sections verification failed", e);
+            takeScreenshot("career_sections_error");
+            throw new CareersPageException("Career sections verification failed", "All Sections", "Comprehensive Section Verification", e);
         }
     }
 
@@ -92,6 +87,31 @@ public class CareersPage extends BasePage {
     }
 
     /**
+     * Verify Locations section is displayed
+     */
+    public void verifyLocationsSectionDisplayed() {
+        try {
+            scrollToElement(locationsSectionLocator, LOCATIONS_SECTION_NAME);
+            boolean isDisplayed = isElementDisplayed(locationsSectionLocator, LOCATIONS_SECTION_NAME);
+
+            Assert.assertTrue(isDisplayed, "Locations section is not displayed on careers page");
+
+            WebElement locationsSection = waitForElementVisible(locationsSectionLocator, LOCATIONS_SECTION_NAME);
+            String sectionText = locationsSection.getText();
+            Assert.assertFalse(sectionText.trim().isEmpty(), "Locations section appears to be empty");
+
+            LoggerUtil.logInfo(logger, "Locations section content: " + sectionText.substring(0, Math.min(100, sectionText.length())) + "...");
+
+            LoggerUtil.logAssertion(logger, "Locations section is displayed and has content");
+        } catch (Exception e) {
+            LoggerUtil.logError(logger, "Locations section verification failed", e);
+            takeScreenshot("locations_section_error");
+            throw new CareersPageException("Locations section verification failed", LOCATIONS_SECTION_NAME, "Section Display and Content Verification", e);
+        }
+    }
+
+
+    /**
      * Verify Life at Insider section is displayed
      */
     public void verifyLifeAtInsiderSectionDisplayed() {
@@ -112,25 +132,6 @@ public class CareersPage extends BasePage {
             LoggerUtil.logError(logger, "Life at Insider section verification failed", e);
             takeScreenshot("life_at_insider_section_error");
             throw new CareersPageException("Life at Insider section verification failed", LIFE_AT_INSIDER_SECTION_NAME, "Section Display and Content Verification", e);
-        }
-    }
-
-    /**
-     * Verify all career page sections are displayed
-     */
-    public void verifyAllCareerSectionsDisplayed() {
-        try {
-            LoggerUtil.logInfo(logger, "Verifying all career page sections...");
-
-            verifyTeamsSectionDisplayed();
-            verifyLocationsSectionDisplayed();
-            verifyLifeAtInsiderSectionDisplayed();
-            
-            LoggerUtil.logAssertion(logger, "All career page sections (Locations, Teams, Life at Insider) are displayed successfully");
-        } catch (Exception e) {
-            LoggerUtil.logError(logger, "Career sections verification failed", e);
-            takeScreenshot("career_sections_error");
-            throw new CareersPageException("Career sections verification failed", "All Sections", "Comprehensive Section Verification", e);
         }
     }
 
