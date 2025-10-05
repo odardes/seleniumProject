@@ -102,14 +102,10 @@ public class HomePage extends BasePage {
     public void clickCareersLink() {
         try {
             Assert.assertTrue(isCompanyMenuDisplayed(), "Company menu is not displayed, cannot click Careers link");
-
             hoverOverCompanyMenu();
-
             Assert.assertTrue(isCareersLinkDisplayed(), "Careers link is not displayed after hovering over Company menu");
-
             scrollToElement(careersLinkLocator, CAREERS_LINK);
             clickElement(careersLinkLocator, CAREERS_LINK);
-
             LoggerUtil.logInfo(logger, "Clicked on Careers link");
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to click on Careers link", e);
@@ -126,12 +122,7 @@ public class HomePage extends BasePage {
             scrollToElement(companyMenuLocator, COMPANY_MENU);
             WebElement companyMenu = waitForElementVisible(companyMenuLocator, COMPANY_MENU);
             hoverOverElement(companyMenu, COMPANY_MENU);
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            LoggerUtil.logError(logger, "Thread interrupted while waiting for dropdown", e);
-            takeScreenshot("company_menu_hover_error");
-            throw new HomePageException("Thread interrupted while waiting for " + COMPANY_MENU + " dropdown", "Hover", COMPANY_MENU, e);
+            waitForElementVisible(careersLinkLocator, CAREERS_LINK);
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to hover over " + COMPANY_MENU, e);
             takeScreenshot("company_menu_hover_error");

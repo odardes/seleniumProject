@@ -121,15 +121,14 @@ public abstract class BasePage {
 
     /**
      * Wait for element to be clickable
-     * @param locator element locator
+     *
+     * @param locator     element locator
      * @param elementName element name for logging
-     * @return WebElement
      */
-    protected WebElement waitForElementClickable(By locator, String elementName) {
+    protected void waitForElementClickable(By locator, String elementName) {
         try {
-            WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
+            wait.until(ExpectedConditions.elementToBeClickable(locator));
             LoggerUtil.logInfo(logger, "Element is now clickable: " + elementName);
-            return element;
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Element did not become clickable: " + elementName, e);
             takeScreenshot("wait_clickable_error_" + elementName);
