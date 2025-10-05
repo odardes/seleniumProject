@@ -225,8 +225,8 @@ public abstract class BasePage {
      */
     protected void verifyTitleContains(String expectedTitleText) {
         try {
-            String actualTitle = driver.getTitle();
-            Assert.assertTrue(actualTitle.contains(expectedTitleText), 
+            String actualTitle = getCurrentTitle();
+            Assert.assertTrue(actualTitle.contains(expectedTitleText),
                 "Title does not contain expected text. Expected: " + expectedTitleText + ", Actual: " + actualTitle);
             LoggerUtil.logAssertion(logger, "Title contains expected text: " + expectedTitleText);
         } catch (Exception e) {

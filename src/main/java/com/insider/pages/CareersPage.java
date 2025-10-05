@@ -29,13 +29,10 @@ public class CareersPage extends BasePage {
         try {
             waitForPageLoad();
 
-            String currentUrl = driver.getCurrentUrl();
-            Assert.assertTrue(currentUrl.contains("careers"), "Careers page URL verification failed. Expected to contain 'careers', Actual: " + currentUrl);
-            
-            String pageTitle = driver.getTitle();
-            Assert.assertTrue(pageTitle.toLowerCase().contains("careers"), "Careers page title verification failed. Expected to contain 'careers', Actual: " + pageTitle);
-            
-            LoggerUtil.logAssertion(logger, "Careers page loaded successfully - URL: " + currentUrl + ", Title: " + pageTitle);
+            verifyUrlContains("careers");
+            verifyTitleContains("Careers");
+
+            LoggerUtil.logAssertion(logger, "Careers page loaded successfully - URL: " + getCurrentUrl() + ", Title: " + getCurrentTitle());
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Careers page verification failed", e);
             takeScreenshot("careers_page_verification_error");

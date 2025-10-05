@@ -119,7 +119,7 @@ public class QACareersPage extends BasePage {
     private boolean applyStandardLocationFilter(String location) {
         try {
             clickElementWithJS(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
-            waitForElementClickable(By.xpath("//option[contains(text(), '" + location + "')]"), "Location Option: " + location);
+            waitForElementClickable(By.xpath(String.format(Locators.LOCATION_FILTER_OPTION, location)), "Location Option: " + location);
             WebElement locationDropdown = waitForElementVisible(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
             Select select = new Select(locationDropdown);
             select.selectByVisibleText(location);
@@ -135,7 +135,7 @@ public class QACareersPage extends BasePage {
      * @param location location to filter by
      */
     private void applyAlternativeLocationFilter(String location) {
-        By alternativeLocationLocator = By.xpath("//option[contains(text(), '" + location + "')]");
+        By alternativeLocationLocator = By.xpath(String.format(Locators.LOCATION_FILTER_OPTION, location));
         clickElement(alternativeLocationLocator, "Alternative Location Filter: " + location);
     }
 
@@ -226,7 +226,7 @@ public class QACareersPage extends BasePage {
      * @param department department to filter by
      */
     private void applyAlternativeDepartmentFilter(String department) {
-        By alternativeDepartmentLocator = By.xpath("//option[contains(text(), '" + department + "')]");
+        By alternativeDepartmentLocator = By.xpath(String.format(Locators.DEPARTMENT_FILTER_OPTION, department));
         clickElement(alternativeDepartmentLocator, "Alternative Department Filter: " + department);
     }
 
