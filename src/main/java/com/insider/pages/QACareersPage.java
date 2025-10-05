@@ -31,14 +31,14 @@ public class QACareersPage extends BasePage {
     private static final String ACTUAL_TEXT_PREFIX = ", Actual: ";
     
     private final By seeAllQaJobsButtonLocator = By.xpath(Locators.QA_SEE_ALL_JOBS_BUTTON);
-    private final By jobListContainerLocator = By.xpath(Locators.JOB_LIST_CONTAINER);
-    private final By jobCardLocator = By.xpath(Locators.JOB_CARD);
+    private final By jobListContainerLocator = By.cssSelector(Locators.JOB_LIST_CONTAINER);
+    private final By jobCardLocator = By.cssSelector(Locators.JOB_CARD);
     private final By jobPositionLocator = By.xpath(Locators.JOB_POSITION);
     private final By jobDepartmentLocator = By.xpath(Locators.JOB_DEPARTMENT);
     private final By jobLocationLocator = By.xpath(Locators.JOB_LOCATION);
     private final By viewRoleButtonLocator = By.xpath(Locators.VIEW_ROLE_BUTTON);
-    private final By locationFilterDropdownLocator = By.xpath(Locators.LOCATION_FILTER_DROPDOWN);
-    private final By departmentFilterDropdownLocator = By.xpath(Locators.DEPARTMENT_FILTER_DROPDOWN);
+    private final By locationFilterDropdownLocator = By.cssSelector(Locators.LOCATION_FILTER_DROPDOWN);
+    private final By departmentFilterDropdownLocator = By.cssSelector(Locators.DEPARTMENT_FILTER_DROPDOWN);
 
     /**
      * Navigate to QA careers page
@@ -130,8 +130,7 @@ public class QACareersPage extends BasePage {
             } else {
                 // For button-based filters
                 clickElement(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
-                // Wait for options to appear and click the desired one
-                By locationOptionLocator = By.xpath(String.format(Locators.LOCATION_FILTER_OPTION, location, location));
+                By locationOptionLocator = By.xpath(String.format(Locators.LOCATION_FILTER_OPTION, location));
                 clickElement(locationOptionLocator, "Location Option: " + location);
             }
             return true;
@@ -146,7 +145,7 @@ public class QACareersPage extends BasePage {
      * @param location location to filter by
      */
     private void applyAlternativeLocationFilter(String location) {
-        By alternativeLocationLocator = By.xpath("//*[contains(text(), '" + location + "') and (self::a or self::button or self::option)]");
+        By alternativeLocationLocator = By.xpath("//option[contains(text(), '" + location + "')]");
         clickElement(alternativeLocationLocator, "Alternative Location Filter: " + location);
     }
 
@@ -199,8 +198,7 @@ public class QACareersPage extends BasePage {
             } else {
                 // For button-based filters
                 clickElement(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
-                // Wait for options to appear and click the desired one
-                By departmentOptionLocator = By.xpath(String.format(Locators.DEPARTMENT_FILTER_OPTION, department, department));
+                By departmentOptionLocator = By.xpath(String.format(Locators.DEPARTMENT_FILTER_OPTION, department));
                 clickElement(departmentOptionLocator, "Department Option: " + department);
             }
             return true;
@@ -215,7 +213,7 @@ public class QACareersPage extends BasePage {
      * @param department department to filter by
      */
     private void applyAlternativeDepartmentFilter(String department) {
-        By alternativeDepartmentLocator = By.xpath("//*[contains(text(), '" + department + "') and (self::a or self::button or self::option)]");
+        By alternativeDepartmentLocator = By.xpath("//option[contains(text(), '" + department + "')]");
         clickElement(alternativeDepartmentLocator, "Alternative Department Filter: " + department);
     }
 

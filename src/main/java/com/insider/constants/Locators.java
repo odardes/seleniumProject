@@ -23,13 +23,12 @@ public final class Locators {
     public static final String QA_SEE_ALL_JOBS_BUTTON = "//a[contains(text(), 'See all QA jobs')]";
     
     // Job Listing Page Locators
-    public static final String JOBS_FILTER_DROPDOWN = "//select[contains(@class, 'filter')] | //div[contains(@class, 'filter')]//button";
-    public static final String LOCATION_FILTER_DROPDOWN = "//select[contains(@name, 'location')] | //div[contains(@class, 'location-filter')]//button";
-    public static final String DEPARTMENT_FILTER_DROPDOWN = "//select[contains(@name, 'department')] | //div[contains(@class, 'department-filter')]//button";
-    public static final String LOCATION_FILTER_OPTION = "//option[contains(text(), '%s')] | //li[contains(text(), '%s')]";
-    public static final String DEPARTMENT_FILTER_OPTION = "//option[contains(text(), '%s')] | //li[contains(text(), '%s')]";
-    public static final String JOB_LIST_CONTAINER = "//div[contains(@class, 'jobs')] | //div[contains(@class, 'positions')]";
-    public static final String JOB_CARD = "//div[contains(@class, 'job')] | //div[contains(@class, 'position')]";
+    public static final String LOCATION_FILTER_DROPDOWN = "select[name*='location']";
+    public static final String DEPARTMENT_FILTER_DROPDOWN = "select[name*='department']";
+    public static final String LOCATION_FILTER_OPTION = "//option[contains(text(), '%s')]";
+    public static final String DEPARTMENT_FILTER_OPTION = "//option[contains(text(), '%s')]";
+    public static final String JOB_LIST_CONTAINER = "#jobs-list";
+    public static final String JOB_CARD = "#jobs-list > div";
     public static final String JOB_POSITION = ".//h3 | .//h4 | .//span[contains(@class, 'position')]";
     public static final String JOB_DEPARTMENT = ".//span[contains(@class, 'department')] | .//div[contains(@class, 'department')]";
     public static final String JOB_LOCATION = ".//span[contains(@class, 'location')] | .//div[contains(@class, 'location')]";
