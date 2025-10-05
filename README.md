@@ -140,7 +140,7 @@ Test reports are generated in the following locations:
 - Reusable page methods
 - Centralized element locators
 
-### Robust Error Handling
+### Error Handling
 - Comprehensive try-catch blocks
 - Screenshot capture on failures
 - Detailed logging for debugging
@@ -156,7 +156,7 @@ Test reports are generated in the following locations:
 - ✅ **POM Pattern**: Complete Page Object Model implementation
 - ✅ **Optimized Selectors**: Efficient CSS and XPath selectors
 - ✅ **Comprehensive Assertions**: Proper validation at each step
-- ✅ **Error Handling**: Robust exception handling and logging
+- ✅ **Error Handling**: Exception handling and logging
 - ✅ **Configuration**: Externalized configuration management
 - ✅ **Reporting**: Detailed test reports and logs
 
