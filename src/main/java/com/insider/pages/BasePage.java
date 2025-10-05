@@ -5,6 +5,7 @@ import com.insider.utils.LoggerUtil;
 import com.insider.utils.WebDriverFactory;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -149,6 +150,23 @@ public abstract class BasePage {
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to scroll to element: " + elementName, e);
             throw new ElementException("Failed to scroll to element", elementName, "SCROLL", e);
+        }
+    }
+
+    /**
+     * Hover over WebElement
+     * @param element WebElement to hover over
+     * @param elementName element name for logging
+     */
+    protected void hoverOverElement(WebElement element, String elementName) {
+        try {
+            Actions actions = new Actions(driver);
+            actions.moveToElement(element).perform();
+            LoggerUtil.logInfo(logger, "Hovered over element: " + elementName);
+        } catch (Exception e) {
+            LoggerUtil.logError(logger, "Failed to hover over element: " + elementName, e);
+            takeScreenshot("hover_error_" + elementName);
+            throw new ElementException("Failed to hover over element", elementName, "HOVER", e);
         }
     }
 

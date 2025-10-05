@@ -106,12 +106,8 @@ public class HomePage extends BasePage {
         try {
             scrollToElement(companyMenuLocator, COMPANY_MENU);
             WebElement companyMenu = waitForElementVisible(companyMenuLocator, COMPANY_MENU);
-
-            Actions actions = new Actions(driver);
-            actions.moveToElement(companyMenu).perform();
-            
+            hoverOverElement(companyMenu, COMPANY_MENU);
             Thread.sleep(1000);
-            LoggerUtil.logInfo(logger, "Hovered over " + COMPANY_MENU);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             LoggerUtil.logError(logger, "Thread interrupted while waiting for dropdown", e);

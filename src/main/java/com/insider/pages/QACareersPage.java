@@ -394,6 +394,8 @@ public class QACareersPage extends BasePage {
      */
     private boolean tryClickViewRoleButton(WebElement jobCard, int jobNumber) {
         try {
+            hoverOverElement(jobCard, "Job Card " + jobNumber);
+            Thread.sleep(500);
             WebElement viewRoleButton = jobCard.findElement(viewRoleButtonLocator);
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", viewRoleButton);
             viewRoleButton.click();
