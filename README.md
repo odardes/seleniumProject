@@ -40,8 +40,15 @@ sena_guventurk_case/
 │   │   │           │   ├── WebDriverFactory.java
 │   │   │           │   ├── ConfigManager.java
 │   │   │           │   └── LoggerUtil.java
-│   │   │           └── constants/
-│   │   │               └── Locators.java
+│   │   │           ├── constants/
+│   │   │           │   └── Locators.java
+│   │   │           └── exceptions/
+│   │   │               ├── CareersPageException.java
+│   │   │               ├── ConfigManagerException.java
+│   │   │               ├── ElementException.java
+│   │   │               ├── HomePageException.java
+│   │   │               ├── QACareersPageException.java
+│   │   │               └── WebDriverFactoryException.java
 │   │   └── resources/
 │   │       ├── config.properties
 │   │       └── log4j2.xml
