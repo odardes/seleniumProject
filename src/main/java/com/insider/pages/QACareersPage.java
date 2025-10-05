@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
@@ -98,18 +99,11 @@ public class QACareersPage extends BasePage {
     public void filterByLocation(String location) {
         try {
             boolean filterApplied = applyStandardLocationFilter(location);
-            
             if (!filterApplied) {
                 applyAlternativeLocationFilter(location);
             }
-            
             waitForFilterToApply();
             LoggerUtil.logInfo(logger, "Applied location filter: " + location);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            LoggerUtil.logError(logger, "Thread interrupted while applying location filter: " + location, e);
-            takeScreenshot("location_filter_error");
-            throw new QACareersPageException("Thread interrupted while applying location filter: " + location, "Filter", LOCATION_FILTER_DROPDOWN, e);
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to apply location filter: " + location, e);
             takeScreenshot("location_filter_error");
@@ -125,8 +119,7 @@ public class QACareersPage extends BasePage {
     private boolean applyStandardLocationFilter(String location) {
         try {
             clickElementWithJS(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
-            Thread.sleep(500);
-            
+            waitForElementClickable(By.xpath("//option[contains(text(), '" + location + "')]"), "Location Option: " + location);
             WebElement locationDropdown = waitForElementVisible(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
             Select select = new Select(locationDropdown);
             select.selectByVisibleText(location);
@@ -148,7 +141,6 @@ public class QACareersPage extends BasePage {
 
     /**
      * Wait for filter to apply and loading to complete
-     * @throws InterruptedException if thread is interrupted during sleep
      */
     private void waitForFilterToApply() throws InterruptedException {
         Thread.sleep(2000);
@@ -174,11 +166,6 @@ public class QACareersPage extends BasePage {
             
             waitForFilterToApply();
             LoggerUtil.logInfo(logger, "Applied department filter: " + department);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            LoggerUtil.logError(logger, "Thread interrupted while applying department filter: " + department, e);
-            takeScreenshot("department_filter_error");
-            throw new QACareersPageException("Thread interrupted while applying department filter: " + department, "Filter", DEPARTMENT_FILTER_DROPDOWN, e);
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to apply department filter: " + department, e);
             takeScreenshot("department_filter_error");
@@ -218,17 +205,14 @@ public class QACareersPage extends BasePage {
             WebElement departmentDropdown = waitForElementVisible(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
             Select select = new Select(departmentDropdown);
             
-            // Check if the option is already selected
             WebElement selectedOption = select.getFirstSelectedOption();
             String currentSelection = selectedOption.getText();
             
-            // If the current selection matches what we want, consider it successful
             if (currentSelection.contains(department) || department.contains(currentSelection)) {
                 LoggerUtil.logInfo(logger, "Department filter '" + department + "' is already selected in dropdown");
                 return true;
             }
             
-            // Try to select by visible text
             select.selectByVisibleText(department);
             return true;
         } catch (Exception e) {
@@ -390,10 +374,9 @@ public class QACareersPage extends BasePage {
         try {
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", jobCard);
             hoverOverElement(jobCard, "Job Card " + jobNumber);
-            Thread.sleep(1000);
-            WebElement viewRoleButton = jobCard.findElement(viewRoleButtonLocator);
+            WebElement viewRoleButton = wait.until(ExpectedConditions.visibilityOf(jobCard.findElement(viewRoleButtonLocator)));
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", viewRoleButton);
-            Thread.sleep(200);
+            wait.until(ExpectedConditions.elementToBeClickable(viewRoleButton));
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", viewRoleButton);
 
             LoggerUtil.logInfo(logger, "Clicked View Role button for job " + jobNumber);
@@ -409,7 +392,7 @@ public class QACareersPage extends BasePage {
      */
     public void verifyLeverApplicationRedirect() {
         try {
-            Thread.sleep(2000);
+            wait.until(ExpectedConditions.numberOfWindowsToBe(2));
             Set<String> windowHandles = driver.getWindowHandles();
             if (windowHandles.size() > 1) {
                 for (String windowHandle : windowHandles) {
@@ -429,11 +412,6 @@ public class QACareersPage extends BasePage {
             Assert.assertTrue(isFormDisplayed, "Lever application form is not displayed");
             
             LoggerUtil.logAssertion(logger, "Successfully redirected to Lever application form: " + currentUrl);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            LoggerUtil.logError(logger, "Thread interrupted while verifying Lever application redirect", e);
-            takeScreenshot("lever_redirect_error");
-            throw new QACareersPageException("Thread interrupted while verifying Lever application redirect", "Verification", LEVER_APPLICATION_FORM, e);
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Lever application redirect verification failed", e);
             takeScreenshot("lever_redirect_error");
