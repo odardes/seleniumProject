@@ -15,9 +15,9 @@ public final class Locators {
     public static final String HOME_CAREERS_LINK = "//a[contains(text(), 'Careers')]";
     
     // CareersPage Locators
-    public static final String CAREERS_LOCATIONS_SECTION = "//section[contains(@class, 'locations')] | //div[contains(@class, 'locations')]";
-    public static final String CAREERS_TEAMS_SECTION = "//section[contains(@class, 'teams')] | //div[contains(@class, 'teams')]";
-    public static final String CAREERS_LIFE_AT_INSIDER_SECTION = "//section[contains(@class, 'life')] | //div[contains(@class, 'life-at-insider')]";
+    public static final String CAREERS_LOCATIONS_SECTION = "#career-our-location";
+    public static final String CAREERS_TEAMS_SECTION = "#career-find-our-calling";
+    public static final String CAREERS_LIFE_AT_INSIDER_SECTION = "section.elementor-section[data-id='a8e7b90']";
     
     // QA Careers Page Locators
     public static final String QA_SEE_ALL_JOBS_BUTTON = "//a[contains(text(), 'See all QA jobs')] | //button[contains(text(), 'See all QA jobs')]";

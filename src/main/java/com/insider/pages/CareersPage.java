@@ -18,9 +18,9 @@ public class CareersPage extends BasePage {
     private static final String TEAMS_SECTION_NAME = "Teams Section";
     private static final String LIFE_AT_INSIDER_SECTION_NAME = "Life at Insider Section";
 
-    private final By locationsSectionLocator = By.xpath(Locators.CAREERS_LOCATIONS_SECTION);
-    private final By teamsSectionLocator = By.xpath(Locators.CAREERS_TEAMS_SECTION);
-    private final By lifeAtInsiderSectionLocator = By.xpath(Locators.CAREERS_LIFE_AT_INSIDER_SECTION);
+    private final By locationsSectionLocator = By.cssSelector(Locators.CAREERS_LOCATIONS_SECTION);
+    private final By teamsSectionLocator = By.cssSelector(Locators.CAREERS_TEAMS_SECTION);
+    private final By lifeAtInsiderSectionLocator = By.cssSelector(Locators.CAREERS_LIFE_AT_INSIDER_SECTION);
 
     /**
      * Verify careers page is loaded successfully
@@ -121,9 +121,9 @@ public class CareersPage extends BasePage {
     public void verifyAllCareerSectionsDisplayed() {
         try {
             LoggerUtil.logInfo(logger, "Verifying all career page sections...");
-            
-            verifyLocationsSectionDisplayed();
+
             verifyTeamsSectionDisplayed();
+            verifyLocationsSectionDisplayed();
             verifyLifeAtInsiderSectionDisplayed();
             
             LoggerUtil.logAssertion(logger, "All career page sections (Locations, Teams, Life at Insider) are displayed successfully");
