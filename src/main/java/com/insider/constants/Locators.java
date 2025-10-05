@@ -36,5 +36,5 @@ public final class Locators {
     public static final String VIEW_ROLE_BUTTON = "//a[text()='View Role']";
     
     // Lever Application Page Locators
-    public static final String LEVER_APPLICATION_FORM = "//div[contains(@class, 'application')] | //form[contains(@class, 'application')]";
+    public static final String LEVER_APPLICATION_FORM = ".posting-headline h2";
 }

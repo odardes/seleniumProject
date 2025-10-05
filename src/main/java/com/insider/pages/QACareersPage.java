@@ -13,6 +13,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Page Object Model for Insider QA Careers Page
@@ -77,7 +78,7 @@ public class QACareersPage extends BasePage {
     public void applyJobFilters() {
         try {
             LoggerUtil.logInfo(logger, "Applying job filters...");
-
+            Thread.sleep(5000);
             filterByLocation(config.getLocationFilter());
             filterByDepartment(config.getDepartmentFilter());
 
@@ -290,7 +291,7 @@ public class QACareersPage extends BasePage {
             
             for (int i = 0; i < totalJobs; i++) {
                 WebElement jobCard = jobCards.get(i);
-                validateSingleJob(jobCard, i + 1, expectedPosition, expectedDepartment, expectedLocation);
+                validateJob(jobCard, i + 1, expectedPosition, expectedDepartment, expectedLocation);
                 validJobs++;
             }
             
@@ -310,29 +311,23 @@ public class QACareersPage extends BasePage {
      * @param expectedDepartment expected department text
      * @param expectedLocation expected location text
      */
-    private void validateSingleJob(WebElement jobCard, int jobNumber, String expectedPosition, String expectedDepartment, String expectedLocation) {
+    private void validateJob(WebElement jobCard, int jobNumber, String expectedPosition, String expectedDepartment, String expectedLocation) {
         try {
-            // Get position text
             WebElement positionElement = jobCard.findElement(jobPositionLocator);
             String positionText = positionElement.getText();
 
-            // Get department text
             WebElement departmentElement = jobCard.findElement(jobDepartmentLocator);
             String departmentText = departmentElement.getText();
 
-            // Get location text
             WebElement locationElement = jobCard.findElement(jobLocationLocator);
             String locationText = locationElement.getText();
 
-            // Validate position contains expected text
             Assert.assertTrue(positionText.contains(expectedPosition),
                     "Job " + jobNumber + " position does not contain expected text. Expected: " + expectedPosition + ACTUAL_TEXT_PREFIX + positionText);
 
-            // Validate department contains expected text
             Assert.assertTrue(departmentText.contains(expectedDepartment),
                     "Job " + jobNumber + " department does not contain expected text. Expected: " + expectedDepartment + ACTUAL_TEXT_PREFIX + departmentText);
 
-            // Validate location contains expected text
             Assert.assertTrue(locationText.contains(expectedLocation),
                     "Job " + jobNumber + " location does not contain expected text. Expected: " + expectedLocation + ACTUAL_TEXT_PREFIX + locationText);
 
@@ -353,7 +348,6 @@ public class QACareersPage extends BasePage {
             List<WebElement> jobCards = getAllJobCards();
             Assert.assertFalse(jobCards.isEmpty(), "No job cards available to click View Role button");
             
-            // Find the first job card with a View Role button
             for (int i = 0; i < jobCards.size(); i++) {
                 WebElement jobCard = jobCards.get(i);
                 if (tryClickViewRoleButton(jobCard, i + 1)) {
@@ -394,11 +388,13 @@ public class QACareersPage extends BasePage {
      */
     private boolean tryClickViewRoleButton(WebElement jobCard, int jobNumber) {
         try {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", jobCard);
             hoverOverElement(jobCard, "Job Card " + jobNumber);
-            Thread.sleep(500);
+            Thread.sleep(1000);
             WebElement viewRoleButton = jobCard.findElement(viewRoleButtonLocator);
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", viewRoleButton);
-            viewRoleButton.click();
+            Thread.sleep(200);
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", viewRoleButton);
 
             LoggerUtil.logInfo(logger, "Clicked View Role button for job " + jobNumber);
             return true;
@@ -413,17 +409,31 @@ public class QACareersPage extends BasePage {
      */
     public void verifyLeverApplicationRedirect() {
         try {
+            Thread.sleep(2000);
+            Set<String> windowHandles = driver.getWindowHandles();
+            if (windowHandles.size() > 1) {
+                for (String windowHandle : windowHandles) {
+                    if (!windowHandle.equals(driver.getWindowHandle())) {
+                        driver.switchTo().window(windowHandle);
+                        break;
+                    }
+                }
+            }
+            
             waitForPageLoad();
             
             String currentUrl = driver.getCurrentUrl();
-            Assert.assertTrue(currentUrl.contains("jobs.lever.co"), 
-                "Not redirected to Lever application form. Expected URL to contain 'jobs.lever.co', Actual: " + currentUrl);
+            Assert.assertTrue(currentUrl.contains("jobs.lever.co"), "Not redirected to Lever application form. Expected URL to contain 'jobs.lever.co', Actual: " + currentUrl);
             
-            // Verify Lever application form is displayed
-            boolean isFormDisplayed = isElementDisplayed(By.xpath(Locators.LEVER_APPLICATION_FORM), LEVER_APPLICATION_FORM);
+            boolean isFormDisplayed = isElementDisplayed(By.cssSelector(Locators.LEVER_APPLICATION_FORM), LEVER_APPLICATION_FORM);
             Assert.assertTrue(isFormDisplayed, "Lever application form is not displayed");
             
             LoggerUtil.logAssertion(logger, "Successfully redirected to Lever application form: " + currentUrl);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            LoggerUtil.logError(logger, "Thread interrupted while verifying Lever application redirect", e);
+            takeScreenshot("lever_redirect_error");
+            throw new QACareersPageException("Thread interrupted while verifying Lever application redirect", "Verification", LEVER_APPLICATION_FORM, e);
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Lever application redirect verification failed", e);
             takeScreenshot("lever_redirect_error");
