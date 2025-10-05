@@ -10,17 +10,16 @@ The automation test covers the following 5 steps:
 2. **Career Page Navigation**: Navigate through Company → Careers menu and verify the career page with its sections (Locations, Teams, Life at Insider)
 3. **Job Search**: Go to QA careers page, filter jobs by Istanbul location and QA department, verify job listings
 4. **Data Validation**: Check all jobs contain "Quality Assurance" in position and department, and "Istanbul, Turkey" in location
-5. **Application Redirect**: Click "View Role" and verify redirection to Lever Application form
+5. **Application Redirect**: Click "View Role" and verify redirection to Application form
 
 ## Technology Stack
 
-- **Language**: Java 21 (Latest LTS)
+- **Language**: Java 21
 - **Framework**: TestNG 7.10.2
 - **Automation**: Selenium WebDriver 4.23.0
 - **Build Tool**: Maven
 - **Browser**: Chrome (with WebDriverManager 5.8.0)
 - **Logging**: Log4j2 2.24.1
-- **Utilities**: Apache Commons Lang 3.17.0
 - **Design Pattern**: Page Object Model (POM)
 
 ## Project Structure
@@ -67,26 +66,6 @@ sena_guventurk_case/
 
 ## Setup Instructions
 
-### 1. Clone/Download the Project
-
-```bash
-# If using git
-git clone <repository-url>
-cd sena_guventurk_case
-
-# Or download and extract the project files
-```
-
-### 2. Install Dependencies
-
-The project uses Maven to manage dependencies. Run the following command to download all required dependencies:
-
-```bash
-mvn clean install
-```
-
-### 3. Configuration
-
 The test configuration is managed through `src/main/resources/config.properties`:
 
 ```properties
@@ -110,7 +89,7 @@ expected.location.text=Istanbul, Turkey
 
 ### 4. Running the Tests
 
-#### Option 1: Using Maven
+#### Using Maven
 
 ```bash
 # Run all tests
@@ -122,21 +101,6 @@ mvn test -Dtest=InsiderCareersTest
 # Run with specific TestNG suite
 mvn test -DsuiteXmlFile=src/test/resources/testng.xml
 ```
-
-#### Option 2: Using IDE
-
-1. Open the project in your IDE
-2. Navigate to `src/test/java/com/insider/tests/InsiderCareersTest.java`
-3. Right-click on the class or specific test method
-4. Select "Run 'InsiderCareersTest'"
-
-#### Option 3: Using TestNG XML
-
-```bash
-mvn test -DsuiteXmlFile=src/test/resources/testng.xml
-```
-
-## Test Execution Details
 
 ### Test Methods
 
@@ -174,50 +138,10 @@ Test reports are generated in the following locations:
 - Screenshot capture on failures
 - Detailed logging for debugging
 
-### Optimized Selectors
-- Efficient CSS selectors and XPath expressions
-- Resilient to minor UI changes
-- Centralized locator management
-
 ### Configuration Management
 - External configuration file
 - Easy parameter updates
 - Environment-specific settings
-
-## Troubleshooting
-
-### Common Issues
-
-1. **WebDriver Issues**:
-   - Ensure Chrome browser is installed
-   - Check WebDriverManager compatibility
-   - Verify Chrome version compatibility
-
-2. **Element Not Found**:
-   - Check if website structure has changed
-   - Verify locators in `Locators.java`
-   - Add explicit waits if needed
-
-3. **Test Failures**:
-   - Check logs in `logs/insider-test.log`
-   - Review screenshots in `screenshots/` directory
-   - Verify network connectivity
-
-### Debug Mode
-
-To enable debug mode, update `log4j2.xml`:
-
-```xml
-<Root level="debug">
-```
-
-### Headless Mode
-
-To run tests in headless mode, update `config.properties`:
-
-```properties
-headless=true
-```
 
 ## Best Practices Implemented
 
@@ -239,7 +163,3 @@ This implementation fully meets all specified requirements:
 - ✅ **Optimized Selectors**: Efficient XPath and CSS selectors
 - ✅ **Comprehensive Assertions**: Validation at each test step
 - ✅ **Clean Code**: Readable and maintainable implementation
-
-## Contact
-
-For any questions or issues related to this automation test, please refer to the project documentation or contact the development team.
