@@ -123,6 +123,9 @@ public class QACareersPage extends BasePage {
      */
     private boolean applyStandardLocationFilter(String location) {
         try {
+            clickElementWithJS(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
+            Thread.sleep(500);
+            
             WebElement locationDropdown = waitForElementVisible(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
             Select select = new Select(locationDropdown);
             select.selectByVisibleText(location);
@@ -148,7 +151,6 @@ public class QACareersPage extends BasePage {
      */
     private void waitForFilterToApply() throws InterruptedException {
         Thread.sleep(2000);
-        waitForLoadingToComplete();
     }
 
     /**
@@ -248,8 +250,6 @@ public class QACareersPage extends BasePage {
      */
     public void verifyJobListDisplayed() {
         try {
-            waitForLoadingToComplete();
-            
             boolean isJobListDisplayed = isElementDisplayed(jobListContainerLocator, JOB_LIST_CONTAINER);
             Assert.assertTrue(isJobListDisplayed, "Job list is not displayed after applying filters");
             

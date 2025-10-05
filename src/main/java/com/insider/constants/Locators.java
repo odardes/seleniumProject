@@ -36,12 +36,4 @@ public final class Locators {
     
     // Lever Application Page Locators
     public static final String LEVER_APPLICATION_FORM = "//div[contains(@class, 'application')] | //form[contains(@class, 'application')]";
-    
-    // Common Locators
-    public static final String PAGE_HEADER = "//h1 | //header//h1";
-    public static final String LOADING_SPINNER = "//div[contains(@class, 'loading')] | //div[contains(@class, 'spinner')]";
-    
-    // Navigation Locators
-    public static final String NAVIGATION_MENU = "//nav | //header//nav";
-    public static final String NAVIGATION_LINK = "//a[contains(text(), '%s')]";
 }
