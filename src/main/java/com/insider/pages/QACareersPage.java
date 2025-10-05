@@ -72,6 +72,25 @@ public class QACareersPage extends BasePage {
     }
 
     /**
+     * Apply both location and department filters
+     */
+    public void applyJobFilters() {
+        try {
+            LoggerUtil.logInfo(logger, "Applying job filters...");
+
+            filterByLocation(config.getLocationFilter());
+            filterByDepartment(config.getDepartmentFilter());
+
+            LoggerUtil.logInfo(logger, "Applied both location and department filters successfully");
+        } catch (Exception e) {
+            LoggerUtil.logError(logger, "Failed to apply job filters", e);
+            takeScreenshot("job_filters_error");
+            throw new QACareersPageException("Failed to apply job filters", "Filter", "Job Filters", e);
+        }
+    }
+
+
+    /**
      * Filter jobs by location
      * @param location location to filter by
      */
@@ -201,24 +220,6 @@ public class QACareersPage extends BasePage {
     }
 
     /**
-     * Apply both location and department filters
-     */
-    public void applyJobFilters() {
-        try {
-            LoggerUtil.logInfo(logger, "Applying job filters...");
-            
-            filterByLocation(config.getLocationFilter());
-            filterByDepartment(config.getDepartmentFilter());
-            
-            LoggerUtil.logInfo(logger, "Applied both location and department filters successfully");
-        } catch (Exception e) {
-            LoggerUtil.logError(logger, "Failed to apply job filters", e);
-            takeScreenshot("job_filters_error");
-            throw new QACareersPageException("Failed to apply job filters", "Filter", "Job Filters", e);
-        }
-    }
-
-    /**
      * Verify job list is displayed
      */
     public void verifyJobListDisplayed() {
@@ -241,20 +242,11 @@ public class QACareersPage extends BasePage {
     }
 
     /**
-     * Get all job cards
-     * @return list of job card elements
+     * Get number of available jobs
+     * @return number of job cards
      */
-    public List<WebElement> getAllJobCards() {
-        try {
-            waitForElementVisible(jobListContainerLocator, JOB_LIST_CONTAINER);
-            List<WebElement> jobCards = driver.findElements(jobCardLocator);
-            LoggerUtil.logInfo(logger, "Found " + jobCards.size() + " job cards");
-            return jobCards;
-        } catch (Exception e) {
-            LoggerUtil.logError(logger, "Failed to get job cards", e);
-            takeScreenshot("get_job_cards_error");
-            throw new QACareersPageException("Failed to get job cards", "Retrieval", JOB_CARD, e);
-        }
+    public int getJobCount() {
+        return getAllJobCards().size();
     }
 
     /**
@@ -287,6 +279,49 @@ public class QACareersPage extends BasePage {
     }
 
     /**
+     * Validate a single job card's position, department, and location
+     * @param jobCard the job card element to validate
+     * @param jobNumber the job number for logging
+     * @param expectedPosition expected position text
+     * @param expectedDepartment expected department text
+     * @param expectedLocation expected location text
+     */
+    private void validateSingleJob(WebElement jobCard, int jobNumber, String expectedPosition, String expectedDepartment, String expectedLocation) {
+        try {
+            // Get position text
+            WebElement positionElement = jobCard.findElement(jobPositionLocator);
+            String positionText = positionElement.getText();
+
+            // Get department text
+            WebElement departmentElement = jobCard.findElement(jobDepartmentLocator);
+            String departmentText = departmentElement.getText();
+
+            // Get location text
+            WebElement locationElement = jobCard.findElement(jobLocationLocator);
+            String locationText = locationElement.getText();
+
+            // Validate position contains expected text
+            Assert.assertTrue(positionText.contains(expectedPosition),
+                    "Job " + jobNumber + " position does not contain expected text. Expected: " + expectedPosition + ACTUAL_TEXT_PREFIX + positionText);
+
+            // Validate department contains expected text
+            Assert.assertTrue(departmentText.contains(expectedDepartment),
+                    "Job " + jobNumber + " department does not contain expected text. Expected: " + expectedDepartment + ACTUAL_TEXT_PREFIX + departmentText);
+
+            // Validate location contains expected text
+            Assert.assertTrue(locationText.contains(expectedLocation),
+                    "Job " + jobNumber + " location does not contain expected text. Expected: " + expectedLocation + ACTUAL_TEXT_PREFIX + locationText);
+
+            LoggerUtil.logInfo(logger, "Job " + jobNumber + " validation passed - Position: " + positionText + ", Department: " + departmentText + ", Location: " + locationText);
+
+        } catch (Exception e) {
+            LoggerUtil.logError(logger, "Failed to validate job " + jobNumber, e);
+            takeScreenshot("job_validation_error_" + jobNumber);
+            throw e;
+        }
+    }
+
+    /**
      * Click View Role button for the first available job
      */
     public void clickViewRoleButton() {
@@ -311,6 +346,43 @@ public class QACareersPage extends BasePage {
     }
 
     /**
+     * Get all job cards
+     * @return list of job card elements
+     */
+    public List<WebElement> getAllJobCards() {
+        try {
+            waitForElementVisible(jobListContainerLocator, JOB_LIST_CONTAINER);
+            List<WebElement> jobCards = driver.findElements(jobCardLocator);
+            LoggerUtil.logInfo(logger, "Found " + jobCards.size() + " job cards");
+            return jobCards;
+        } catch (Exception e) {
+            LoggerUtil.logError(logger, "Failed to get job cards", e);
+            takeScreenshot("get_job_cards_error");
+            throw new QACareersPageException("Failed to get job cards", "Retrieval", JOB_CARD, e);
+        }
+    }
+
+    /**
+     * Try to click View Role button on a job card
+     * @param jobCard the job card element
+     * @param jobNumber the job number for logging
+     * @return true if button was clicked successfully, false otherwise
+     */
+    private boolean tryClickViewRoleButton(WebElement jobCard, int jobNumber) {
+        try {
+            WebElement viewRoleButton = jobCard.findElement(viewRoleButtonLocator);
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", viewRoleButton);
+            viewRoleButton.click();
+
+            LoggerUtil.logInfo(logger, "Clicked View Role button for job " + jobNumber);
+            return true;
+        } catch (Exception e) {
+            LoggerUtil.logWarning(logger, "View Role button not found for job " + jobNumber + ", trying next job");
+            return false;
+        }
+    }
+
+    /**
      * Verify redirection to Lever application form
      */
     public void verifyLeverApplicationRedirect() {
@@ -330,78 +402,6 @@ public class QACareersPage extends BasePage {
             LoggerUtil.logError(logger, "Lever application redirect verification failed", e);
             takeScreenshot("lever_redirect_error");
             throw new QACareersPageException("Lever application redirect verification failed", "Verification", LEVER_APPLICATION_FORM, e);
-        }
-    }
-
-    /**
-     * Get number of available jobs
-     * @return number of job cards
-     */
-    public int getJobCount() {
-        return getAllJobCards().size();
-    }
-
-    /**
-     * Validate a single job card's position, department, and location
-     * @param jobCard the job card element to validate
-     * @param jobNumber the job number for logging
-     * @param expectedPosition expected position text
-     * @param expectedDepartment expected department text
-     * @param expectedLocation expected location text
-     */
-    private void validateSingleJob(WebElement jobCard, int jobNumber, String expectedPosition,
-                                 String expectedDepartment, String expectedLocation) {
-        try {
-            // Get position text
-            WebElement positionElement = jobCard.findElement(jobPositionLocator);
-            String positionText = positionElement.getText();
-            
-            // Get department text
-            WebElement departmentElement = jobCard.findElement(jobDepartmentLocator);
-            String departmentText = departmentElement.getText();
-            
-            // Get location text
-            WebElement locationElement = jobCard.findElement(jobLocationLocator);
-            String locationText = locationElement.getText();
-            
-            // Validate position contains expected text
-            Assert.assertTrue(positionText.contains(expectedPosition),
-                "Job " + jobNumber + " position does not contain expected text. Expected: " + expectedPosition + ACTUAL_TEXT_PREFIX + positionText);
-            
-            // Validate department contains expected text
-            Assert.assertTrue(departmentText.contains(expectedDepartment),
-                "Job " + jobNumber + " department does not contain expected text. Expected: " + expectedDepartment + ACTUAL_TEXT_PREFIX + departmentText);
-            
-            // Validate location contains expected text
-            Assert.assertTrue(locationText.contains(expectedLocation),
-                "Job " + jobNumber + " location does not contain expected text. Expected: " + expectedLocation + ACTUAL_TEXT_PREFIX + locationText);
-            
-            LoggerUtil.logInfo(logger, "Job " + jobNumber + " validation passed - Position: " + positionText + ", Department: " + departmentText + ", Location: " + locationText);
-            
-        } catch (Exception e) {
-            LoggerUtil.logError(logger, "Failed to validate job " + jobNumber, e);
-            takeScreenshot("job_validation_error_" + jobNumber);
-            throw e;
-        }
-    }
-
-    /**
-     * Try to click View Role button on a job card
-     * @param jobCard the job card element
-     * @param jobNumber the job number for logging
-     * @return true if button was clicked successfully, false otherwise
-     */
-    private boolean tryClickViewRoleButton(WebElement jobCard, int jobNumber) {
-        try {
-            WebElement viewRoleButton = jobCard.findElement(viewRoleButtonLocator);
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", viewRoleButton);
-            viewRoleButton.click();
-            
-            LoggerUtil.logInfo(logger, "Clicked View Role button for job " + jobNumber);
-            return true;
-        } catch (Exception e) {
-            LoggerUtil.logWarning(logger, "View Role button not found for job " + jobNumber + ", trying next job");
-            return false;
         }
     }
 }

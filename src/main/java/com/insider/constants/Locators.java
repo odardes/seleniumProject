@@ -20,7 +20,7 @@ public final class Locators {
     public static final String CAREERS_LIFE_AT_INSIDER_SECTION = "section.elementor-section[data-id='a8e7b90']";
     
     // QA Careers Page Locators
-    public static final String QA_SEE_ALL_JOBS_BUTTON = "//a[contains(text(), 'See all QA jobs')] | //button[contains(text(), 'See all QA jobs')]";
+    public static final String QA_SEE_ALL_JOBS_BUTTON = "//a[contains(text(), 'See all QA jobs')]";
     
     // Job Listing Page Locators
     public static final String JOBS_FILTER_DROPDOWN = "//select[contains(@class, 'filter')] | //div[contains(@class, 'filter')]//button";
