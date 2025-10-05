@@ -33,9 +33,9 @@ public class QACareersPage extends BasePage {
     private final By seeAllQaJobsButtonLocator = By.xpath(Locators.QA_SEE_ALL_JOBS_BUTTON);
     private final By jobListContainerLocator = By.cssSelector(Locators.JOB_LIST_CONTAINER);
     private final By jobCardLocator = By.cssSelector(Locators.JOB_CARD);
-    private final By jobPositionLocator = By.xpath(Locators.JOB_POSITION);
-    private final By jobDepartmentLocator = By.xpath(Locators.JOB_DEPARTMENT);
-    private final By jobLocationLocator = By.xpath(Locators.JOB_LOCATION);
+    private final By jobPositionLocator = By.cssSelector(Locators.JOB_POSITION);
+    private final By jobDepartmentLocator = By.cssSelector(Locators.JOB_DEPARTMENT);
+    private final By jobLocationLocator = By.cssSelector(Locators.JOB_LOCATION);
     private final By viewRoleButtonLocator = By.xpath(Locators.VIEW_ROLE_BUTTON);
     private final By locationFilterDropdownLocator = By.cssSelector(Locators.LOCATION_FILTER_DROPDOWN);
     private final By departmentFilterDropdownLocator = By.cssSelector(Locators.DEPARTMENT_FILTER_DROPDOWN);

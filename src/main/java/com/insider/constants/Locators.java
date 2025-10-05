@@ -29,10 +29,10 @@ public final class Locators {
     public static final String DEPARTMENT_FILTER_OPTION = "//option[contains(text(), '%s')]";
     public static final String JOB_LIST_CONTAINER = "#jobs-list";
     public static final String JOB_CARD = "#jobs-list > div";
-    public static final String JOB_POSITION = ".//h3 | .//h4 | .//span[contains(@class, 'position')]";
-    public static final String JOB_DEPARTMENT = ".//span[contains(@class, 'department')] | .//div[contains(@class, 'department')]";
-    public static final String JOB_LOCATION = ".//span[contains(@class, 'location')] | .//div[contains(@class, 'location')]";
-    public static final String VIEW_ROLE_BUTTON = ".//a[contains(text(), 'View Role')] | .//button[contains(text(), 'View Role')]";
+    public static final String JOB_POSITION = "p[class*='position']";
+    public static final String JOB_DEPARTMENT = "span[class*='department']";
+    public static final String JOB_LOCATION = ".position-location";
+    public static final String VIEW_ROLE_BUTTON = "//a[text()='View Role']";
     
     // Lever Application Page Locators
     public static final String LEVER_APPLICATION_FORM = "//div[contains(@class, 'application')] | //form[contains(@class, 'application')]";
