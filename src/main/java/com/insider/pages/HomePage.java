@@ -8,7 +8,6 @@ import com.insider.utils.WebDriverFactory;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 
 /**
@@ -20,9 +19,11 @@ public class HomePage extends BasePage {
 
     private static final String COMPANY_MENU = "Company Menu";
     private static final String CAREERS_LINK = "Careers Link";
+    private static final String ACCEPT_COOKIES_BUTTON = "Accept Cookies Button";
     
     private final By companyMenuLocator = By.xpath(Locators.HOME_COMPANY_MENU);
     private final By careersLinkLocator = By.xpath(Locators.HOME_CAREERS_LINK);
+    private final By acceptCookiesButtonLocator = By.cssSelector(Locators.ACCEPT_COOKIES_BUTTON);
 
     /**
      * Navigate to Insider home page
@@ -31,11 +32,29 @@ public class HomePage extends BasePage {
         try {
             WebDriverFactory.navigateTo(config.getBaseUrl());
             waitForPageLoad();
+            acceptCookiesIfPresent();
+            
             LoggerUtil.logInfo(logger, "Navigated to Insider home page: " + config.getBaseUrl());
         } catch (Exception e) {
             LoggerUtil.logError(logger, "Failed to navigate to home page", e);
             takeScreenshot("home_page_navigation_error");
             throw new HomePageException("Failed to navigate to home page", "Navigation", "Home Page", e);
+        }
+    }
+
+    /**
+     * Accept cookies if the accept cookies button is present
+     */
+    public void acceptCookiesIfPresent() {
+        try {
+            if (isElementDisplayed(acceptCookiesButtonLocator, ACCEPT_COOKIES_BUTTON)) {
+                clickElement(acceptCookiesButtonLocator, ACCEPT_COOKIES_BUTTON);
+                LoggerUtil.logInfo(logger, "Clicked on Accept Cookies button");
+            } else {
+                LoggerUtil.logInfo(logger, "Accept Cookies button not present, continuing...");
+            }
+        }catch (Exception e) {
+            LoggerUtil.logWarning(logger, "Failed to accept cookies, continuing test...");
         }
     }
 
