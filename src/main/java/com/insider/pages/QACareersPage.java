@@ -124,15 +124,8 @@ public class QACareersPage extends BasePage {
     private boolean applyStandardLocationFilter(String location) {
         try {
             WebElement locationDropdown = waitForElementVisible(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
-            if (locationDropdown.getTagName().equals("select")) {
-                Select select = new Select(locationDropdown);
-                select.selectByVisibleText(location);
-            } else {
-                // For button-based filters
-                clickElement(locationFilterDropdownLocator, LOCATION_FILTER_DROPDOWN);
-                By locationOptionLocator = By.xpath(String.format(Locators.LOCATION_FILTER_OPTION, location));
-                clickElement(locationOptionLocator, "Location Option: " + location);
-            }
+            Select select = new Select(locationDropdown);
+            select.selectByVisibleText(location);
             return true;
         } catch (Exception e) {
             LoggerUtil.logWarning(logger, "Standard location filter approach failed, trying alternative methods");
@@ -164,6 +157,12 @@ public class QACareersPage extends BasePage {
      */
     public void filterByDepartment(String department) {
         try {
+            if (isDepartmentFilterAlreadyApplied(department)) {
+                LoggerUtil.logInfo(logger, "Department filter '" + department + "' is already applied, skipping filter application");
+                waitForFilterToApply();
+                return;
+            }
+            
             boolean filterApplied = applyStandardDepartmentFilter(department);
             
             if (!filterApplied) {
@@ -185,6 +184,28 @@ public class QACareersPage extends BasePage {
     }
 
     /**
+     * Check if department filter is already applied
+     * @param department department to check
+     * @return true if department filter is already applied, false otherwise
+     */
+    private boolean isDepartmentFilterAlreadyApplied(String department) {
+        try {
+            WebElement departmentDropdown = waitForElementVisible(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
+            Select select = new Select(departmentDropdown);
+            WebElement selectedOption = select.getFirstSelectedOption();
+            String currentSelection = selectedOption.getText();
+
+            return currentSelection.contains(department) ||
+                    department.contains(currentSelection) ||
+                    currentSelection.toLowerCase().contains(department.toLowerCase()) ||
+                    department.toLowerCase().contains(currentSelection.toLowerCase());
+        } catch (Exception e) {
+            LoggerUtil.logWarning(logger, "Could not verify current department filter selection, proceeding with filter application");
+            return false;
+        }
+    }
+
+    /**
      * Apply standard department filter using dropdown or button approach
      * @param department department to filter by
      * @return true if filter was applied successfully
@@ -192,15 +213,20 @@ public class QACareersPage extends BasePage {
     private boolean applyStandardDepartmentFilter(String department) {
         try {
             WebElement departmentDropdown = waitForElementVisible(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
-            if (departmentDropdown.getTagName().equals("select")) {
-                Select select = new Select(departmentDropdown);
-                select.selectByVisibleText(department);
-            } else {
-                // For button-based filters
-                clickElement(departmentFilterDropdownLocator, DEPARTMENT_FILTER_DROPDOWN);
-                By departmentOptionLocator = By.xpath(String.format(Locators.DEPARTMENT_FILTER_OPTION, department));
-                clickElement(departmentOptionLocator, "Department Option: " + department);
+            Select select = new Select(departmentDropdown);
+            
+            // Check if the option is already selected
+            WebElement selectedOption = select.getFirstSelectedOption();
+            String currentSelection = selectedOption.getText();
+            
+            // If the current selection matches what we want, consider it successful
+            if (currentSelection.contains(department) || department.contains(currentSelection)) {
+                LoggerUtil.logInfo(logger, "Department filter '" + department + "' is already selected in dropdown");
+                return true;
             }
+            
+            // Try to select by visible text
+            select.selectByVisibleText(department);
             return true;
         } catch (Exception e) {
             LoggerUtil.logWarning(logger, "Standard department filter approach failed, trying alternative methods");
