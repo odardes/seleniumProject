@@ -1,6 +1,5 @@
 package com.insider.pages;
 
-import com.insider.constants.Locators;
 import com.insider.exceptions.ElementException;
 import com.insider.utils.LoggerUtil;
 import com.insider.utils.WebDriverFactory;
@@ -217,18 +216,6 @@ public abstract class BasePage {
             LoggerUtil.logError(logger, "Title verification failed for: " + expectedTitleText, e);
             takeScreenshot("title_verification_error");
             throw e;
-        }
-    }
-
-    /**
-     * Wait for loading spinner to disappear
-     */
-    protected void waitForLoadingToComplete() {
-        try {
-            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(Locators.LOADING_SPINNER)));
-            LoggerUtil.logInfo(logger, "Loading completed");
-        } catch (Exception e) {
-            LoggerUtil.logWarning(logger, "Loading spinner not found or already disappeared");
         }
     }
 
